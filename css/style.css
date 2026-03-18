@@ -1,0 +1,179 @@
+/* ============================================
+   Alder & Stone — Architecture Portfolio
+   Custom Styles
+   ============================================ */
+
+/* ----------------------------------------
+   Base Typography
+   ---------------------------------------- */
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-weight: 300;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+}
+
+/* Serif headings */
+h1, h2, h3 {
+    font-weight: 300;
+    line-height: 1.15;
+    letter-spacing: 0.02em;
+}
+
+/* Body text */
+p {
+    line-height: 1.8;
+    font-weight: 300;
+}
+
+/* Small caps labels */
+.label-caps {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+}
+
+/* Selection styling */
+::selection {
+    background-color: #1a1a19;
+    color: #faf9f7;
+}
+
+/* Navigation link underline effect */
+.nav-link {
+    position: relative;
+    font-weight: 300;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background-color: currentColor;
+    transition: width 0.3s ease-out;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* Image loading states */
+img {
+    background-color: #f0ede8;
+}
+
+/* Cursor styling for project items */
+.project-item a {
+    cursor: pointer;
+}
+
+/* Hide scrollbar for horizontal galleries */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Custom scrollbar (webkit) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #faf9f7;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d4d4d4;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a3a3a3;
+}
+
+/* Firefox scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #d4d4d4 #faf9f7;
+}
+
+/* Prevent layout shift on load */
+img {
+    vertical-align: middle;
+}
+
+/* Typography refinements */
+h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+}
+
+p {
+    text-wrap: pretty;
+}
+
+/* Letter spacing for all caps elements */
+.uppercase {
+    letter-spacing: 0.15em;
+}
+
+/* Focus styles for accessibility */
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid #1a1a19;
+    outline-offset: 4px;
+}
+
+/* Reduce motion for those who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 1024px) {
+    /* Reduce spacing on mobile */
+    section {
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+    }
+
+    /* Adjust typography scale */
+    .font-serif {
+        letter-spacing: 0.01em;
+    }
+}
+
+/* Print styles */
+@media print {
+    nav,
+    footer {
+        display: none;
+    }
+
+    section {
+        page-break-inside: avoid;
+    }
+}

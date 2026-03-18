@@ -1,0 +1,138 @@
+/* ============================================
+   CMS Editor Styles
+   ============================================ */
+
+/* Edit / Save Toggle Button */
+#cms-edit-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  padding: 10px 28px;
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: #1a1a19;
+  color: #faf9f7;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#cms-edit-btn:hover {
+  background: #2e2e2c;
+}
+
+#cms-edit-btn.cms-save-mode {
+  background: #16a34a;
+}
+
+#cms-edit-btn.cms-save-mode:hover {
+  background: #15803d;
+}
+
+#cms-edit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Editable text elements */
+.cms-editable {
+  outline: 1px dashed rgba(59, 130, 246, 0.4) !important;
+  outline-offset: 4px;
+  cursor: text !important;
+  border-radius: 2px;
+  transition: outline-color 0.2s;
+}
+
+.cms-editable:hover {
+  outline-color: rgba(59, 130, 246, 0.7) !important;
+}
+
+.cms-editable:focus {
+  outline: 2px solid rgba(59, 130, 246, 0.8) !important;
+  outline-offset: 4px;
+}
+
+/* Disable pointer events on blocking overlays during edit mode */
+.cms-no-events {
+  pointer-events: none !important;
+}
+
+/* Media upload overlay — always visible in edit mode */
+.cms-upload-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 1;
+  transition: background 0.25s ease;
+  cursor: pointer;
+}
+
+.cms-upload-overlay:hover {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.cms-upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+/* Toast notification */
+#cms-toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 10001;
+  padding: 12px 32px;
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: #fff;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+#cms-toast.cms-toast-show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+#cms-toast.cms-toast-success {
+  background: #1a1a19;
+}
+
+#cms-toast.cms-toast-error {
+  background: #dc2626;
+}
+
+/* Edit mode indicator — subtle top border */
+body.cms-editing::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #3b82f6;
+  z-index: 10001;
+}

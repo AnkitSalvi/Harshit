@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ navVisible: true, lastScroll: 0 }"
+      @scroll.window="navVisible = (window.scrollY < lastScroll || window.scrollY < 100); lastScroll = window.scrollY">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Glass Pavilion — Alder & Stone</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
+                        sans: ['Outfit', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        stone: {
+                            950: '#0f0f0e',
+                            900: '#1a1a19',
+                            850: '#242423',
+                            800: '#2e2e2c',
+                            100: '#f5f5f4',
+                            50: '#fafaf9',
+                        },
+                        warm: {
+                            white: '#faf9f7',
+                            cream: '#f0ede8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/editor.css">
+</head>
+<body class="bg-warm-white text-stone-900 font-sans antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 transition-transform duration-500 ease-out mix-blend-difference"
+         :class="navVisible ? 'translate-y-0' : '-translate-y-full'">
+        <div class="flex justify-between items-center px-8 lg:px-16 py-6 text-white">
+            <a href="index.html" class="font-serif text-xl tracking-wide" data-editable="proj-nav-logo">Alder & Stone</a>
+            <a href="index.html#works" class="text-xs tracking-widest uppercase font-light nav-link">All Works</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="h-screen w-full relative" x-data="{ loaded: false }" x-init="setTimeout(() => loaded = true, 100)">
+        <div class="absolute inset-0" data-media="proj-hero">
+            <img
+                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80"
+                alt="The Glass Pavilion"
+                class="w-full h-full object-cover transition-transform duration-[2s] ease-out"
+                :class="loaded ? 'scale-100' : 'scale-110'"
+            >
+            <div class="absolute inset-0 bg-stone-950/30"></div>
+        </div>
+
+        <div class="absolute bottom-16 left-8 lg:left-16 right-8 lg:right-16 text-warm-white">
+            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-8">
+                <div>
+                    <p class="text-xs tracking-widest uppercase mb-4 opacity-0 transition-all duration-1000 delay-500"
+                       :class="loaded ? 'opacity-70 translate-y-0' : 'translate-y-4'"
+                       data-editable="proj-type">
+                        Residential — 2024
+                    </p>
+                    <h1 class="font-serif text-5xl lg:text-7xl xl:text-8xl font-light tracking-wide opacity-0 transition-all duration-1000 delay-700"
+                        :class="loaded ? 'opacity-100 translate-y-0' : 'translate-y-8'"
+                        data-editable="proj-title">
+                        The Glass Pavilion
+                    </h1>
+                </div>
+                <p class="text-sm font-light max-w-xs opacity-0 transition-all duration-1000 delay-900 lg:text-right"
+                   :class="loaded ? 'opacity-80 translate-y-0' : 'translate-y-4'"
+                   data-editable="proj-location">
+                    Malibu, California
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Introduction -->
+    <section class="py-32 lg:py-48 px-8 lg:px-16">
+        <div class="max-w-4xl mx-auto" x-data="{ visible: false }" x-intersect:enter="visible = true">
+            <p class="font-serif text-2xl lg:text-3xl xl:text-4xl font-light leading-relaxed transition-all duration-700"
+               :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'"
+               data-editable="proj-intro">
+                Perched on the Malibu cliffs, this 4,200 square foot residence dissolves
+                the traditional boundary between interior space and the Pacific landscape
+                beyond. Floor-to-ceiling glass walls frame ever-changing views of ocean,
+                sky, and coastline.
+            </p>
+        </div>
+    </section>
+
+    <!-- Full Bleed Image 1 -->
+    <section x-data="{ visible: false }" x-intersect:enter="visible = true" data-media="proj-full-1">
+        <img
+            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80"
+            alt="Glass Pavilion living space"
+            class="w-full aspect-[16/9] object-cover transition-all duration-1000"
+            :class="visible ? 'opacity-100' : 'opacity-0'"
+        >
+    </section>
+
+    <!-- Text Block -->
+    <section class="py-32 lg:py-48 px-8 lg:px-16">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16" x-data="{ visible: false }" x-intersect:enter="visible = true">
+            <div class="lg:col-span-4">
+                <p class="text-xs tracking-widest uppercase text-stone-400 mb-4 transition-all duration-700"
+                   :class="visible ? 'opacity-100' : 'opacity-0'"
+                   data-editable="proj-concept-label">
+                    Concept
+                </p>
+            </div>
+            <div class="lg:col-span-6 lg:col-start-6">
+                <p class="text-lg lg:text-xl font-light leading-relaxed text-stone-700 transition-all duration-700 delay-100"
+                   :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
+                   data-editable="proj-concept-1">
+                    The design emerged from a simple observation: the most profound architectural
+                    experiences often come from the interplay of light and material. Here, we sought
+                    to create a dwelling that would be in constant dialogue with its environment—
+                    a pavilion of glass and stone that celebrates the California coast while providing
+                    intimate shelter.
+                </p>
+                <p class="text-lg lg:text-xl font-light leading-relaxed text-stone-700 mt-6 transition-all duration-700 delay-200"
+                   :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
+                   data-editable="proj-concept-2">
+                    The structure is organized around a central courtyard, with living spaces
+                    arranged to capture morning light from the east and evening sunsets to the west.
+                    Cantilevered roof planes provide shade while maintaining unobstructed views.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Two Column Images -->
+    <section class="px-8 lg:px-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+            <div x-data="{ visible: false }" x-intersect:enter="visible = true" data-media="proj-col-left">
+                <img
+                    src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80"
+                    alt="Interior detail"
+                    class="w-full aspect-[4/5] object-cover transition-all duration-700"
+                    :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'"
+                >
+            </div>
+            <div x-data="{ visible: false }" x-intersect:enter="visible = true" class="lg:mt-24" data-media="proj-col-right">
+                <img
+                    src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80"
+                    alt="Kitchen space"
+                    class="w-full aspect-[4/5] object-cover transition-all duration-700"
+                    :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'"
+                >
+            </div>
+        </div>
+    </section>
+
+    <!-- Text Block 2 -->
+    <section class="py-32 lg:py-48 px-8 lg:px-16">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16" x-data="{ visible: false }" x-intersect:enter="visible = true">
+            <div class="lg:col-span-4">
+                <p class="text-xs tracking-widest uppercase text-stone-400 mb-4 transition-all duration-700"
+                   :class="visible ? 'opacity-100' : 'opacity-0'"
+                   data-editable="proj-materials-label">
+                    Materials
+                </p>
+            </div>
+            <div class="lg:col-span-6 lg:col-start-6">
+                <p class="text-lg lg:text-xl font-light leading-relaxed text-stone-700 transition-all duration-700 delay-100"
+                   :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
+                   data-editable="proj-materials-text">
+                    A restrained palette of materials—board-formed concrete, white oak, and
+                    floor-to-ceiling low-iron glass—creates a sense of calm continuity throughout.
+                    The concrete walls bear the subtle texture of their formwork, grounding the
+                    lightness of the glass pavilions.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Full Bleed Image 2 -->
+    <section x-data="{ visible: false }" x-intersect:enter="visible = true" data-media="proj-full-2">
+        <img
+            src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1920&q=80"
+            alt="Bedroom with ocean view"
+            class="w-full aspect-[16/9] object-cover transition-all duration-1000"
+            :class="visible ? 'opacity-100' : 'opacity-0'"
+        >
+    </section>
+
+    <!-- Image with Caption -->
+    <section class="py-32 lg:py-48 px-8 lg:px-16">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8" x-data="{ visible: false }" x-intersect:enter="visible = true">
+            <div class="lg:col-span-8 lg:col-start-3">
+                <div data-media="proj-caption-img">
+                    <img
+                        src="https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=1400&q=80"
+                        alt="Exterior at dusk"
+                        class="w-full aspect-[3/2] object-cover transition-all duration-700"
+                        :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'"
+                    >
+                </div>
+                <p class="text-sm text-stone-400 mt-4 transition-all duration-700 delay-200"
+                   :class="visible ? 'opacity-100' : 'opacity-0'"
+                   data-editable="proj-caption-text">
+                    The west-facing terrace at dusk, where the concrete mass meets the Pacific horizon.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Full Bleed Image 3 -->
+    <section x-data="{ visible: false }" x-intersect:enter="visible = true" data-media="proj-full-3">
+        <img
+            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80"
+            alt="Exterior view"
+            class="w-full aspect-[16/9] object-cover transition-all duration-1000"
+            :class="visible ? 'opacity-100' : 'opacity-0'"
+        >
+    </section>
+
+    <!-- Project Info -->
+    <section class="py-32 lg:py-48 px-8 lg:px-16 border-t border-stone-200">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16" x-data="{ visible: false }" x-intersect:enter="visible = true">
+            <div class="transition-all duration-700"
+                 :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
+                <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Location</p>
+                <p class="font-light" data-editable="proj-info-location">Malibu, California</p>
+            </div>
+            <div class="transition-all duration-700 delay-100"
+                 :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
+                <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Year</p>
+                <p class="font-light" data-editable="proj-info-year">2024</p>
+            </div>
+            <div class="transition-all duration-700 delay-200"
+                 :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
+                <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Area</p>
+                <p class="font-light" data-editable="proj-info-area">4,200 sq ft</p>
+            </div>
+            <div class="transition-all duration-700 delay-300"
+                 :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
+                <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Type</p>
+                <p class="font-light" data-editable="proj-info-type">Single Family Residence</p>
+            </div>
+            <div class="transition-all duration-700 delay-400"
+                 :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
+                <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Structural</p>
+                <p class="font-light" data-editable="proj-info-structural">Thornton Tomasetti</p>
+            </div>
+            <div class="transition-all duration-700 delay-500"
+                 :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
+                <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Landscape</p>
+                <p class="font-light" data-editable="proj-info-landscape">Terremoto</p>
+            </div>
+            <div class="transition-all duration-700 delay-600"
+                 :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
+                <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Contractor</p>
+                <p class="font-light" data-editable="proj-info-contractor">Marmol Radziner</p>
+            </div>
+            <div class="transition-all duration-700 delay-700"
+                 :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
+                <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Photography</p>
+                <p class="font-light" data-editable="proj-info-photography">Marcus Chen</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Next Project -->
+    <section class="relative h-[70vh] overflow-hidden group cursor-pointer"
+             x-data="{ visible: false }"
+             x-intersect:enter="visible = true">
+        <a href="#" class="block h-full">
+            <div class="absolute inset-0" data-media="proj-next-bg">
+                <img
+                    src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1920&q=80"
+                    alt="Next project: Concrete House"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                >
+                <div class="absolute inset-0 bg-stone-950/40 transition-opacity duration-500 group-hover:bg-stone-950/50"></div>
+            </div>
+
+            <div class="absolute inset-0 flex flex-col justify-center items-center text-warm-white text-center">
+                <p class="text-xs tracking-widest uppercase mb-4 transition-all duration-700"
+                   :class="visible ? 'opacity-70 translate-y-0' : 'opacity-0 translate-y-4'"
+                   data-editable="proj-next-label">
+                    Next Project
+                </p>
+                <h2 class="font-serif text-4xl lg:text-6xl xl:text-7xl font-light transition-all duration-700 delay-100"
+                    :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'"
+                    data-editable="proj-next-title">
+                    Concrete House
+                </h2>
+                <p class="text-sm mt-4 transition-all duration-700 delay-200"
+                   :class="visible ? 'opacity-60 translate-y-0' : 'opacity-0 translate-y-4'"
+                   data-editable="proj-next-location">
+                    Austin, Texas
+                </p>
+            </div>
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-8 lg:px-16 border-t border-stone-200 bg-warm-white">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
+            <div>
+                <a href="index.html" class="font-serif text-lg" data-editable="proj-footer-brand">Alder & Stone</a>
+                <p class="text-xs text-stone-400 mt-1">&copy; 2024. All rights reserved.</p>
+            </div>
+            <div class="flex gap-8 text-xs tracking-widest uppercase text-stone-500">
+                <a href="#" class="hover:text-stone-900 transition-colors">Instagram</a>
+                <a href="#" class="hover:text-stone-900 transition-colors">LinkedIn</a>
+                <a href="#" class="hover:text-stone-900 transition-colors">Pinterest</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/editor.js"></script>
+</body>
+</html>
