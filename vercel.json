@@ -1,6 +1,6 @@
 {
-  "rewrites": [
-    { "source": "/api/content", "destination": "/api/content" },
-    { "source": "/api/upload", "destination": "/api/upload" }
-  ]
+  "framework": null,
+  "buildCommand": "",
+  "installCommand": "",
+  "outputDirectory": "."
 }
