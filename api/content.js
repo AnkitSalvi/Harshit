@@ -35,6 +35,7 @@ module.exports = async (req, res) => {
       var jsonStr = JSON.stringify(body, null, 2);
 
       var blob = await put(CONTENT_BLOB_NAME, jsonStr, {
+        access: 'private',
         contentType: 'application/json',
         addRandomSuffix: false,
         allowOverwrite: true

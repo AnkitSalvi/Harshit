@@ -43,6 +43,7 @@ module.exports = async (req, res) => {
 
     // Upload to Vercel Blob
     var blob = await put(blobPath, parsed.data, {
+      access: 'private',
       contentType: parsed.contentType,
       addRandomSuffix: false
     });
