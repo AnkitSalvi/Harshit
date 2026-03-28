@@ -43,12 +43,12 @@ module.exports = async (req, res) => {
 
     // Upload to Vercel Blob
     var blob = await put(blobPath, parsed.data, {
-      access: 'public',
       contentType: parsed.contentType,
       addRandomSuffix: false
     });
 
-    return res.json({ filename: filename, path: blob.url });
+    // Return a proxy path that our /api/media endpoint can serve
+    return res.json({ filename: filename, path: '/api/media?file=' + encodeURIComponent(blobPath) });
   } catch (err) {
     console.error('Upload error:', err);
     return res.status(500).json({ error: err.message });

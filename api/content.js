@@ -1,4 +1,4 @@
-const { put, list, head } = require('@vercel/blob');
+const { put, list } = require('@vercel/blob');
 const fs = require('fs');
 const path = require('path');
 
@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
         var blobs = await list({ prefix: 'cms/content' });
         var contentBlob = blobs.blobs.find(function (b) { return b.pathname === CONTENT_BLOB_NAME; });
         if (contentBlob) {
-          var response = await fetch(contentBlob.url);
+          var response = await fetch(contentBlob.downloadUrl);
           var data = await response.json();
           return res.json(data);
         }
@@ -34,11 +34,10 @@ module.exports = async (req, res) => {
       var body = req.body;
       var jsonStr = JSON.stringify(body, null, 2);
 
-      // Save to Vercel Blob
       var blob = await put(CONTENT_BLOB_NAME, jsonStr, {
-        access: 'public',
         contentType: 'application/json',
-        addRandomSuffix: false
+        addRandomSuffix: false,
+        allowOverwrite: true
       });
 
       return res.json({ success: true, url: blob.url });

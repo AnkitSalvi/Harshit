@@ -64,6 +64,19 @@ app.get('/api/content', (req, res) => {
   }
 });
 
+// Media proxy (for consistency with Vercel /api/media?file=path)
+app.get('/api/media', (req, res) => {
+  const filePath = req.query.file;
+  if (!filePath) return res.status(400).json({ error: 'Missing file parameter' });
+
+  // Serve from local uploads directory
+  const localPath = path.join(__dirname, filePath);
+  if (fs.existsSync(localPath)) {
+    return res.sendFile(localPath);
+  }
+  return res.status(404).json({ error: 'File not found' });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
