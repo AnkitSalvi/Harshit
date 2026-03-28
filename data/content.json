@@ -1,0 +1,93 @@
+{
+  "pages": {
+    "index.html": {
+      "texts": {
+        "hero-title": "Studio<br>Name",
+        "hero-subtitle": "Architecture | Interior Design | Urban Design",
+        "hero-location": "City, State",
+        "hero-est": "Est. 2020"
+      },
+      "media": {}
+    },
+    "projects.html": {
+      "texts": {
+        "nav-logo": "Studio Name",
+        "projects-label": "Our Work",
+        "projects-heading": "Projects",
+        "projects-subtitle": "Explore our portfolio of architectural and interior design projects that showcase our commitment to excellence and innovation.",
+        "proj1-tag": "Residential • 2024",
+        "proj1-title": "The Stone House",
+        "proj1-desc": "A contemporary residence celebrating the raw beauty of local stone, with minimalist design and organic integration with the landscape.",
+        "proj2-tag": "Residential • 2025",
+        "proj2-title": "Urban Duplex",
+        "proj2-desc": "A luxurious duplex penthouse featuring sophisticated interiors and carefully curated design elements that create an elevated urban living experience.",
+        "proj3-tag": "Commercial • 2025",
+        "proj3-title": "Contemporary Office Space",
+        "proj3-desc": "A modern office design that incorporates natural materials and traditional craftsmanship to create an inspiring work environment.",
+        "proj4-tag": "Commercial • 2025",
+        "proj4-title": "Retail Store",
+        "proj4-desc": "A sophisticated retail environment designed to showcase textile and homeware collections while creating an immersive shopping experience.",
+        "proj5-tag": "Hospitality • 2025",
+        "proj5-title": "Lakeside Cafe and Restaurant",
+        "proj5-desc": "A contemporary cafe and restaurant overlooking a scenic lakeside location, designed to create memorable dining experiences.",
+        "proj6-tag": "Residential • 2025",
+        "proj6-title": "Modern Apartment",
+        "proj6-desc": "A refined contemporary apartment with a considered interior palette that balances comfort, light, and understated elegance.",
+        "footer-logo": "Studio Name",
+        "footer-desc": "Architecture and Interior Design Studio based in City, State.",
+        "footer-location": "City, State",
+        "footer-country": "Country",
+        "footer-email": "hello@example.com",
+        "footer-phone": "+1 234 567 890",
+        "footer-social-1": "Instagram"
+      },
+      "media": {}
+    },
+    "project.html": {
+      "texts": {
+        "nav-logo": "Studio Name",
+        "proj-category": "Residential",
+        "proj-year": "2024",
+        "proj-title": "The Stone House",
+        "proj-short-desc": "A contemporary residence celebrating the raw beauty of local stone, with minimalist design and organic integration with the landscape.",
+        "proj-long-desc": "The Stone House is a contemporary residential project that places raw, locally-sourced stone at the heart of its design language. The architecture responds to its natural surroundings while providing modern comfort and spatial flow.",
+        "proj-detail-location": "Rajasthan",
+        "proj-detail-area": "5,500 sq ft",
+        "proj-detail-status": "Completed",
+        "proj-detail-client": "Private Residence",
+        "proj-detail-team": "Lead Architect<br>Design Lead",
+        "proj-detail-mgmt": "End-to-end project management including contractor coordination, procurement, and on-site delivery.",
+        "proj-features-title": "Key Features",
+        "proj-feature-1": "Locally sourced stone exterior and interiors",
+        "proj-feature-2": "Thermal mass stone walls for climate control",
+        "proj-feature-3": "Minimalist interior design",
+        "proj-feature-4": "Large glazed openings with landscape views",
+        "proj-feature-5": "Hand-finished plaster walls",
+        "proj-feature-6": "Organic site integration",
+        "proj-section1-title": "Architecture",
+        "proj-section1-desc": "The architectural language is rooted in the raw materiality of locally-sourced stone. The building mass is sculpted to respond to the landscape, creating sheltered courtyards and framed views of the surrounding terrain.",
+        "proj-section1-counter": "1 / 11",
+        "proj-section2-title": "Interiors",
+        "proj-section2-desc": "Interior spaces embrace a restrained palette that allows natural materials to take center stage. The interplay of light, texture, and volume creates a contemplative atmosphere throughout.",
+        "proj-section2-counter": "1 / 14",
+        "proj-section3-title": "Curation",
+        "proj-section3-desc": "Every detail has been carefully curated to reflect a commitment to craftsmanship. From furniture selections to material finishes, each element contributes to a cohesive design narrative.",
+        "proj-section3-counter": "1 / 8",
+        "proj-gallery-title": "Project Gallery",
+        "proj-next-label": "Next Project",
+        "proj-next-title": "Urban Duplex",
+        "proj-cta-label": "Collaboration",
+        "proj-cta-title": "Interested in working together?",
+        "proj-cta-desc": "Let's discuss your project and explore how we can create something extraordinary together.",
+        "footer-logo": "IKIGIA&nbsp;Name",
+        "footer-desc": "Architecture and Interior Design Studio based in City, State.",
+        "footer-location": "City, State",
+        "footer-country": "Country",
+        "footer-email": "hello@example.com",
+        "footer-phone": "+1 234 567 890",
+        "footer-social-1": "Instagram"
+      },
+      "media": {}
+    }
+  }
+}

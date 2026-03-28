@@ -1,331 +1,218 @@
 <!DOCTYPE html>
-<html lang="en" x-data="{ navVisible: true, lastScroll: 0 }"
-      @scroll.window="navVisible = (window.scrollY < lastScroll || window.scrollY < 100); lastScroll = window.scrollY">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Glass Pavilion — Alder & Stone</title>
+    <title>Project — Studio Name</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
-                        sans: ['Outfit', 'system-ui', 'sans-serif'],
-                    },
-                    colors: {
-                        stone: {
-                            950: '#0f0f0e',
-                            900: '#1a1a19',
-                            850: '#242423',
-                            800: '#2e2e2c',
-                            100: '#f5f5f4',
-                            50: '#fafaf9',
-                        },
-                        warm: {
-                            white: '#faf9f7',
-                            cream: '#f0ede8',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Julius+Sans+One&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/editor.css">
 </head>
-<body class="bg-warm-white text-stone-900 font-sans antialiased">
+<body>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 transition-transform duration-500 ease-out mix-blend-difference"
-         :class="navVisible ? 'translate-y-0' : '-translate-y-full'">
-        <div class="flex justify-between items-center px-8 lg:px-16 py-6 text-white">
-            <a href="index.html" class="font-serif text-xl tracking-wide" data-editable="proj-nav-logo">Alder & Stone</a>
-            <a href="index.html#works" class="text-xs tracking-widest uppercase font-light nav-link">All Works</a>
+    <nav class="site-nav" id="site-nav">
+        <a href="index.html" class="nav-logo" data-editable="nav-logo">Studio Name</a>
+        <div class="nav-links">
+            <a href="projects.html" class="nav-link active">Projects</a>
+            <a href="about.html" class="nav-link">About</a>
+            <a href="contact.html" class="nav-link">Contact</a>
         </div>
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </nav>
 
-    <!-- Hero -->
-    <section class="h-screen w-full relative" x-data="{ loaded: false }" x-init="setTimeout(() => loaded = true, 100)">
-        <div class="absolute inset-0" data-media="proj-hero">
-            <img
-                src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80"
-                alt="The Glass Pavilion"
-                class="w-full h-full object-cover transition-transform duration-[2s] ease-out"
-                :class="loaded ? 'scale-100' : 'scale-110'"
-            >
-            <div class="absolute inset-0 bg-stone-950/30"></div>
-        </div>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="projects.html">Projects</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+    </div>
 
-        <div class="absolute bottom-16 left-8 lg:left-16 right-8 lg:right-16 text-warm-white">
-            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-8">
-                <div>
-                    <p class="text-xs tracking-widest uppercase mb-4 opacity-0 transition-all duration-1000 delay-500"
-                       :class="loaded ? 'opacity-70 translate-y-0' : 'translate-y-4'"
-                       data-editable="proj-type">
-                        Residential — 2024
-                    </p>
-                    <h1 class="font-serif text-5xl lg:text-7xl xl:text-8xl font-light tracking-wide opacity-0 transition-all duration-1000 delay-700"
-                        :class="loaded ? 'opacity-100 translate-y-0' : 'translate-y-8'"
-                        data-editable="proj-title">
-                        The Glass Pavilion
-                    </h1>
-                </div>
-                <p class="text-sm font-light max-w-xs opacity-0 transition-all duration-1000 delay-900 lg:text-right"
-                   :class="loaded ? 'opacity-80 translate-y-0' : 'translate-y-4'"
-                   data-editable="proj-location">
-                    Malibu, California
-                </p>
-            </div>
-        </div>
-    </section>
+    <!-- Back to Projects -->
+    <div class="project-back">
+        <a href="projects.html">&larr; Back to Projects</a>
+    </div>
 
-    <!-- Project Introduction -->
-    <section class="py-32 lg:py-48 px-8 lg:px-16">
-        <div class="max-w-4xl mx-auto" x-data="{ visible: false }" x-intersect:enter="visible = true">
-            <p class="font-serif text-2xl lg:text-3xl xl:text-4xl font-light leading-relaxed transition-all duration-700"
-               :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'"
-               data-editable="proj-intro">
-                Perched on the Malibu cliffs, this 4,200 square foot residence dissolves
-                the traditional boundary between interior space and the Pacific landscape
-                beyond. Floor-to-ceiling glass walls frame ever-changing views of ocean,
-                sky, and coastline.
-            </p>
-        </div>
-    </section>
-
-    <!-- Full Bleed Image 1 -->
-    <section x-data="{ visible: false }" x-intersect:enter="visible = true" data-media="proj-full-1">
-        <img
-            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80"
-            alt="Glass Pavilion living space"
-            class="w-full aspect-[16/9] object-cover transition-all duration-1000"
-            :class="visible ? 'opacity-100' : 'opacity-0'"
-        >
-    </section>
-
-    <!-- Text Block -->
-    <section class="py-32 lg:py-48 px-8 lg:px-16">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16" x-data="{ visible: false }" x-intersect:enter="visible = true">
-            <div class="lg:col-span-4">
-                <p class="text-xs tracking-widest uppercase text-stone-400 mb-4 transition-all duration-700"
-                   :class="visible ? 'opacity-100' : 'opacity-0'"
-                   data-editable="proj-concept-label">
-                    Concept
-                </p>
-            </div>
-            <div class="lg:col-span-6 lg:col-start-6">
-                <p class="text-lg lg:text-xl font-light leading-relaxed text-stone-700 transition-all duration-700 delay-100"
-                   :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
-                   data-editable="proj-concept-1">
-                    The design emerged from a simple observation: the most profound architectural
-                    experiences often come from the interplay of light and material. Here, we sought
-                    to create a dwelling that would be in constant dialogue with its environment—
-                    a pavilion of glass and stone that celebrates the California coast while providing
-                    intimate shelter.
-                </p>
-                <p class="text-lg lg:text-xl font-light leading-relaxed text-stone-700 mt-6 transition-all duration-700 delay-200"
-                   :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
-                   data-editable="proj-concept-2">
-                    The structure is organized around a central courtyard, with living spaces
-                    arranged to capture morning light from the east and evening sunsets to the west.
-                    Cantilevered roof planes provide shade while maintaining unobstructed views.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Two Column Images -->
-    <section class="px-8 lg:px-16">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-            <div x-data="{ visible: false }" x-intersect:enter="visible = true" data-media="proj-col-left">
-                <img
-                    src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80"
-                    alt="Interior detail"
-                    class="w-full aspect-[4/5] object-cover transition-all duration-700"
-                    :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'"
-                >
-            </div>
-            <div x-data="{ visible: false }" x-intersect:enter="visible = true" class="lg:mt-24" data-media="proj-col-right">
-                <img
-                    src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1200&q=80"
-                    alt="Kitchen space"
-                    class="w-full aspect-[4/5] object-cover transition-all duration-700"
-                    :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'"
-                >
-            </div>
-        </div>
-    </section>
-
-    <!-- Text Block 2 -->
-    <section class="py-32 lg:py-48 px-8 lg:px-16">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16" x-data="{ visible: false }" x-intersect:enter="visible = true">
-            <div class="lg:col-span-4">
-                <p class="text-xs tracking-widest uppercase text-stone-400 mb-4 transition-all duration-700"
-                   :class="visible ? 'opacity-100' : 'opacity-0'"
-                   data-editable="proj-materials-label">
-                    Materials
-                </p>
-            </div>
-            <div class="lg:col-span-6 lg:col-start-6">
-                <p class="text-lg lg:text-xl font-light leading-relaxed text-stone-700 transition-all duration-700 delay-100"
-                   :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'"
-                   data-editable="proj-materials-text">
-                    A restrained palette of materials—board-formed concrete, white oak, and
-                    floor-to-ceiling low-iron glass—creates a sense of calm continuity throughout.
-                    The concrete walls bear the subtle texture of their formwork, grounding the
-                    lightness of the glass pavilions.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Full Bleed Image 2 -->
-    <section x-data="{ visible: false }" x-intersect:enter="visible = true" data-media="proj-full-2">
-        <img
-            src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1920&q=80"
-            alt="Bedroom with ocean view"
-            class="w-full aspect-[16/9] object-cover transition-all duration-1000"
-            :class="visible ? 'opacity-100' : 'opacity-0'"
-        >
-    </section>
-
-    <!-- Image with Caption -->
-    <section class="py-32 lg:py-48 px-8 lg:px-16">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8" x-data="{ visible: false }" x-intersect:enter="visible = true">
-            <div class="lg:col-span-8 lg:col-start-3">
-                <div data-media="proj-caption-img">
-                    <img
-                        src="https://images.unsplash.com/photo-1600573472592-401b489a3cdc?w=1400&q=80"
-                        alt="Exterior at dusk"
-                        class="w-full aspect-[3/2] object-cover transition-all duration-700"
-                        :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'"
-                    >
-                </div>
-                <p class="text-sm text-stone-400 mt-4 transition-all duration-700 delay-200"
-                   :class="visible ? 'opacity-100' : 'opacity-0'"
-                   data-editable="proj-caption-text">
-                    The west-facing terrace at dusk, where the concrete mass meets the Pacific horizon.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Full Bleed Image 3 -->
-    <section x-data="{ visible: false }" x-intersect:enter="visible = true" data-media="proj-full-3">
-        <img
-            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80"
-            alt="Exterior view"
-            class="w-full aspect-[16/9] object-cover transition-all duration-1000"
-            :class="visible ? 'opacity-100' : 'opacity-0'"
-        >
-    </section>
+    <!-- Hero Image -->
+    <div class="project-hero-img">
+        <div class="img-container" data-media="proj-hero-img"></div>
+    </div>
 
     <!-- Project Info -->
-    <section class="py-32 lg:py-48 px-8 lg:px-16 border-t border-stone-200">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16" x-data="{ visible: false }" x-intersect:enter="visible = true">
-            <div class="transition-all duration-700"
-                 :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
-                <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Location</p>
-                <p class="font-light" data-editable="proj-info-location">Malibu, California</p>
+    <section class="project-info-section">
+        <!-- Left Column: Title & Description -->
+        <div>
+            <p class="project-meta-tag">
+                <span data-editable="proj-category">Residential</span>
+                <span class="divider"></span>
+                <span data-editable="proj-year">2024</span>
+            </p>
+            <h1 class="project-detail-title" data-editable="proj-title">The Stone House</h1>
+            <p class="project-detail-desc" data-editable="proj-short-desc">A contemporary residence celebrating the raw beauty of local stone, with minimalist design and organic integration with the landscape.</p>
+            <br>
+            <p class="project-detail-desc" data-editable="proj-long-desc">The Stone House is a contemporary residential project that places raw, locally-sourced stone at the heart of its design language. The architecture responds to its natural surroundings while providing modern comfort and spatial flow.</p>
+        </div>
+
+        <!-- Right Column: Project Details -->
+        <div>
+            <div class="project-details-grid">
+                <div>
+                    <p class="detail-label">Location</p>
+                    <p class="detail-value" data-editable="proj-detail-location">Rajasthan</p>
+                </div>
+                <div>
+                    <p class="detail-label">Area</p>
+                    <p class="detail-value" data-editable="proj-detail-area">5,500 sq ft</p>
+                </div>
+                <div>
+                    <p class="detail-label">Status</p>
+                    <p class="detail-value" data-editable="proj-detail-status">Completed</p>
+                </div>
+                <div>
+                    <p class="detail-label">Client</p>
+                    <p class="detail-value" data-editable="proj-detail-client">Private Residence</p>
+                </div>
+                <div>
+                    <p class="detail-label">Team</p>
+                    <p class="detail-value" data-editable="proj-detail-team">Lead Architect<br>Design Lead</p>
+                </div>
+                <div>
+                    <p class="detail-label">Project Management</p>
+                    <p class="detail-value" data-editable="proj-detail-mgmt">End-to-end project management including contractor coordination, procurement, and on-site delivery.</p>
+                </div>
             </div>
-            <div class="transition-all duration-700 delay-100"
-                 :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
-                <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Year</p>
-                <p class="font-light" data-editable="proj-info-year">2024</p>
-            </div>
-            <div class="transition-all duration-700 delay-200"
-                 :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
-                <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Area</p>
-                <p class="font-light" data-editable="proj-info-area">4,200 sq ft</p>
-            </div>
-            <div class="transition-all duration-700 delay-300"
-                 :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
-                <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Type</p>
-                <p class="font-light" data-editable="proj-info-type">Single Family Residence</p>
-            </div>
-            <div class="transition-all duration-700 delay-400"
-                 :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
-                <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Structural</p>
-                <p class="font-light" data-editable="proj-info-structural">Thornton Tomasetti</p>
-            </div>
-            <div class="transition-all duration-700 delay-500"
-                 :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
-                <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Landscape</p>
-                <p class="font-light" data-editable="proj-info-landscape">Terremoto</p>
-            </div>
-            <div class="transition-all duration-700 delay-600"
-                 :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
-                <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Contractor</p>
-                <p class="font-light" data-editable="proj-info-contractor">Marmol Radziner</p>
-            </div>
-            <div class="transition-all duration-700 delay-700"
-                 :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
-                <p class="text-xs tracking-widest uppercase text-stone-400 mb-3">Photography</p>
-                <p class="font-light" data-editable="proj-info-photography">Marcus Chen</p>
+
+            <!-- Key Features -->
+            <div class="key-features">
+                <h3 data-editable="proj-features-title">Key Features</h3>
+                <ul>
+                    <li data-editable="proj-feature-1">Locally sourced stone exterior and interiors</li>
+                    <li data-editable="proj-feature-2">Thermal mass stone walls for climate control</li>
+                    <li data-editable="proj-feature-3">Minimalist interior design</li>
+                    <li data-editable="proj-feature-4">Large glazed openings with landscape views</li>
+                    <li data-editable="proj-feature-5">Hand-finished plaster walls</li>
+                    <li data-editable="proj-feature-6">Organic site integration</li>
+                </ul>
             </div>
         </div>
     </section>
 
-    <!-- Next Project -->
-    <section class="relative h-[70vh] overflow-hidden group cursor-pointer"
-             x-data="{ visible: false }"
-             x-intersect:enter="visible = true">
-        <a href="#" class="block h-full">
-            <div class="absolute inset-0" data-media="proj-next-bg">
-                <img
-                    src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1920&q=80"
-                    alt="Next project: Concrete House"
-                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-                >
-                <div class="absolute inset-0 bg-stone-950/40 transition-opacity duration-500 group-hover:bg-stone-950/50"></div>
-            </div>
+    <!-- Architecture Section -->
+    <section class="image-section">
+        <div class="image-section-header">
+            <h2 data-editable="proj-section1-title">Architecture</h2>
+            <p data-editable="proj-section1-desc">The architectural language is rooted in the raw materiality of locally-sourced stone. The building mass is sculpted to respond to the landscape, creating sheltered courtyards and framed views of the surrounding terrain.</p>
+        </div>
+        <div class="carousel-container" data-media="proj-section1-img"></div>
+        <div class="carousel-controls">
+            <button class="carousel-btn" aria-label="Previous image">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <span class="carousel-counter" data-editable="proj-section1-counter">1 / 11</span>
+            <button class="carousel-btn" aria-label="Next image">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+        </div>
+    </section>
 
-            <div class="absolute inset-0 flex flex-col justify-center items-center text-warm-white text-center">
-                <p class="text-xs tracking-widest uppercase mb-4 transition-all duration-700"
-                   :class="visible ? 'opacity-70 translate-y-0' : 'opacity-0 translate-y-4'"
-                   data-editable="proj-next-label">
-                    Next Project
-                </p>
-                <h2 class="font-serif text-4xl lg:text-6xl xl:text-7xl font-light transition-all duration-700 delay-100"
-                    :class="visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'"
-                    data-editable="proj-next-title">
-                    Concrete House
-                </h2>
-                <p class="text-sm mt-4 transition-all duration-700 delay-200"
-                   :class="visible ? 'opacity-60 translate-y-0' : 'opacity-0 translate-y-4'"
-                   data-editable="proj-next-location">
-                    Austin, Texas
-                </p>
-            </div>
-        </a>
+    <!-- Interiors Section -->
+    <section class="image-section">
+        <div class="image-section-header">
+            <h2 data-editable="proj-section2-title">Interiors</h2>
+            <p data-editable="proj-section2-desc">Interior spaces embrace a restrained palette that allows natural materials to take center stage. The interplay of light, texture, and volume creates a contemplative atmosphere throughout.</p>
+        </div>
+        <div class="carousel-container" data-media="proj-section2-img"></div>
+        <div class="carousel-controls">
+            <button class="carousel-btn" aria-label="Previous image">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <span class="carousel-counter" data-editable="proj-section2-counter">1 / 14</span>
+            <button class="carousel-btn" aria-label="Next image">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+        </div>
+    </section>
+
+    <!-- Curation Section -->
+    <section class="image-section">
+        <div class="image-section-header">
+            <h2 data-editable="proj-section3-title">Curation</h2>
+            <p data-editable="proj-section3-desc">Every detail has been carefully curated to reflect a commitment to craftsmanship. From furniture selections to material finishes, each element contributes to a cohesive design narrative.</p>
+        </div>
+        <div class="carousel-container" data-media="proj-section3-img"></div>
+        <div class="carousel-controls">
+            <button class="carousel-btn" aria-label="Previous image">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <span class="carousel-counter" data-editable="proj-section3-counter">1 / 8</span>
+            <button class="carousel-btn" aria-label="Next image">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+        </div>
+    </section>
+
+    <!-- Project Gallery -->
+    <div class="gallery-grid">
+        <div class="gallery-grid-header">
+            <h2 data-editable="proj-gallery-title">Project Gallery</h2>
+        </div>
+        <div class="gallery-item" data-media="proj-gallery-1"></div>
+        <div class="gallery-item" data-media="proj-gallery-2"></div>
+        <div class="gallery-item" data-media="proj-gallery-3"></div>
+        <div class="gallery-item" data-media="proj-gallery-4"></div>
+        <div class="gallery-item" data-media="proj-gallery-5"></div>
+        <div class="gallery-item" data-media="proj-gallery-6"></div>
+        <div class="gallery-item" data-media="proj-gallery-7"></div>
+        <div class="gallery-item" data-media="proj-gallery-8"></div>
+        <div class="gallery-item" data-media="proj-gallery-9"></div>
+    </div>
+
+    <!-- Next Project -->
+    <a href="project.html?id=2" class="next-project">
+        <p class="next-project-label" data-editable="proj-next-label">Next Project</p>
+        <h2 class="next-project-title" data-editable="proj-next-title">Urban Duplex</h2>
+    </a>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <p class="label-caps" data-editable="proj-cta-label">Collaboration</p>
+        <h2 data-editable="proj-cta-title">Interested in working together?</h2>
+        <p data-editable="proj-cta-desc">Let's discuss your project and explore how we can create something extraordinary together.</p>
+        <a href="contact.html" class="cta-button">Start a Conversation</a>
     </section>
 
     <!-- Footer -->
-    <footer class="py-12 px-8 lg:px-16 border-t border-stone-200 bg-warm-white">
-        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
-            <div>
-                <a href="index.html" class="font-serif text-lg" data-editable="proj-footer-brand">Alder & Stone</a>
-                <p class="text-xs text-stone-400 mt-1">&copy; 2024. All rights reserved.</p>
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <span class="nav-logo" data-editable="footer-logo">Studio Name</span>
+                <p data-editable="footer-desc">Architecture and Interior Design Studio based in City, State.</p>
             </div>
-            <div class="flex gap-8 text-xs tracking-widest uppercase text-stone-500">
-                <a href="#" class="hover:text-stone-900 transition-colors">Instagram</a>
-                <a href="#" class="hover:text-stone-900 transition-colors">LinkedIn</a>
-                <a href="#" class="hover:text-stone-900 transition-colors">Pinterest</a>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p data-editable="footer-location">City, State</p>
+                <p data-editable="footer-country">Country</p>
+                <br>
+                <a href="mailto:hello@example.com" data-editable="footer-email">hello@example.com</a>
+                <a href="tel:+1234567890" data-editable="footer-phone">+1 234 567 890</a>
             </div>
+            <div class="footer-section">
+                <h3>Follow</h3>
+                <a href="#" data-editable="footer-social-1">Instagram</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Studio Name. All rights reserved.</p>
         </div>
     </footer>
 

@@ -5,24 +5,24 @@
 /* Edit / Save Toggle Button */
 #cms-edit-btn {
   position: fixed;
-  top: 20px;
+  top: 80px;
   right: 20px;
   z-index: 10000;
   padding: 10px 28px;
-  font-family: 'Outfit', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.2em;
+  font-weight: 500;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  background: #1a1a19;
-  color: #faf9f7;
+  background: #1b1818;
+  color: #fcf6f3;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 #cms-edit-btn:hover {
-  background: #2e2e2c;
+  background: #333;
 }
 
 #cms-edit-btn.cms-save-mode {
@@ -40,7 +40,7 @@
 
 /* Editable text elements */
 .cms-editable {
-  outline: 1px dashed rgba(59, 130, 246, 0.4) !important;
+  outline: 1px dashed rgba(142, 39, 14, 0.4) !important;
   outline-offset: 4px;
   cursor: text !important;
   border-radius: 2px;
@@ -48,11 +48,11 @@
 }
 
 .cms-editable:hover {
-  outline-color: rgba(59, 130, 246, 0.7) !important;
+  outline-color: rgba(142, 39, 14, 0.7) !important;
 }
 
 .cms-editable:focus {
-  outline: 2px solid rgba(59, 130, 246, 0.8) !important;
+  outline: 2px solid rgba(142, 39, 14, 0.8) !important;
   outline-offset: 4px;
 }
 
@@ -61,7 +61,7 @@
   pointer-events: none !important;
 }
 
-/* Media upload overlay — always visible in edit mode */
+/* Media upload overlay */
 .cms-upload-overlay {
   position: absolute;
   inset: 0;
@@ -85,9 +85,9 @@
   align-items: center;
   gap: 10px;
   color: #fff;
-  font-family: 'Outfit', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 11px;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   pointer-events: none;
@@ -101,7 +101,7 @@
   transform: translateX(-50%) translateY(20px);
   z-index: 10001;
   padding: 12px 32px;
-  font-family: 'Outfit', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px;
   font-weight: 400;
   letter-spacing: 0.05em;
@@ -118,14 +118,14 @@
 }
 
 #cms-toast.cms-toast-success {
-  background: #1a1a19;
+  background: #1b1818;
 }
 
 #cms-toast.cms-toast-error {
   background: #dc2626;
 }
 
-/* Edit mode indicator — subtle top border */
+/* Edit mode indicator */
 body.cms-editing::before {
   content: '';
   position: fixed;
@@ -133,6 +133,37 @@ body.cms-editing::before {
   left: 0;
   right: 0;
   height: 3px;
-  background: #3b82f6;
+  background: #8e270e;
   z-index: 10001;
+}
+
+/*
+ * During edit mode, ensure hero-content (text) stays above
+ * the upload overlay on the hero background.
+ */
+body.cms-editing .hero-content {
+  z-index: 25 !important;
+  pointer-events: none;
+}
+
+body.cms-editing .hero-content [data-editable] {
+  pointer-events: auto;
+}
+
+body.cms-editing .hero-bottom {
+  z-index: 25 !important;
+  pointer-events: none;
+}
+
+body.cms-editing .hero-bottom [data-editable] {
+  pointer-events: auto;
+}
+
+/* Ensure project card text is editable above overlay */
+body.cms-editing .project-card-content {
+  z-index: 25 !important;
+}
+
+body.cms-editing .project-card-overlay {
+  pointer-events: none !important;
 }

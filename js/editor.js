@@ -1,13 +1,15 @@
 (function () {
   'use strict';
 
-  let editMode = false;
-  let pendingUploads = {};
-  let editBtn = null;
-  let toast = null;
+  var editMode = false;
+  var pendingUploads = {};
+  var editBtn = null;
+  var toast = null;
+  // Store original inline styles so we can restore them on exit
+  var originalStyles = [];
 
   function getPageKey() {
-    let page = window.location.pathname.split('/').pop();
+    var page = window.location.pathname.split('/').pop();
     if (!page || page === '') page = 'index.html';
     return page;
   }
@@ -43,6 +45,7 @@
 
   function enterEditMode() {
     editMode = true;
+    originalStyles = [];
     editBtn.textContent = 'Save';
     editBtn.classList.add('cms-save-mode');
     document.body.classList.add('cms-editing');
@@ -55,7 +58,7 @@
 
     // Media elements
     document.querySelectorAll('[data-media]').forEach(function (el) {
-      ensurePositioned(el);
+      saveAndPositionMedia(el);
       disableBlockingSiblings(el);
       disableBlockingChildren(el);
       addUploadOverlay(el);
@@ -85,6 +88,13 @@
       el.classList.remove('cms-no-events');
     });
 
+    // Restore original inline styles on media containers
+    originalStyles.forEach(function (entry) {
+      entry.el.style.position = entry.position;
+      entry.el.style.zIndex = entry.zIndex;
+    });
+    originalStyles = [];
+
     document.removeEventListener('click', blockLinks, true);
 
     // Clean up object URLs
@@ -103,20 +113,27 @@
     }
   }
 
-  function ensurePositioned(el) {
+  /**
+   * Save original inline styles, then set position/zIndex for the overlay.
+   * The original values are restored in exitEditMode.
+   */
+  function saveAndPositionMedia(el) {
+    // Store originals
+    originalStyles.push({
+      el: el,
+      position: el.style.position || '',
+      zIndex: el.style.zIndex || ''
+    });
+
     var pos = window.getComputedStyle(el).position;
     if (pos === 'static') {
       el.style.position = 'relative';
     }
-    // Give the media container a z-index so its overlay stacks above siblings
+    // Don't override z-index on elements that are inside layered structures
+    // Only set z-index if needed for the overlay to render
     el.style.zIndex = '2';
   }
 
-  /**
-   * Disable pointer-events on absolute-positioned siblings that sit on top
-   * of the media container and block hover/click (e.g. the dark hover overlays
-   * on project cards).
-   */
   function disableBlockingSiblings(container) {
     var parent = container.parentElement;
     if (!parent) return;
@@ -124,7 +141,6 @@
       if (sibling === container) return;
       if (sibling.classList.contains('cms-upload-overlay')) return;
       if (sibling.classList.contains('cms-file-input')) return;
-      // Only disable absolutely positioned siblings (overlays)
       var pos = window.getComputedStyle(sibling).position;
       if (pos === 'absolute' && !sibling.querySelector('[data-editable]')) {
         sibling.classList.add('cms-no-events');
@@ -132,11 +148,6 @@
     });
   }
 
-  /**
-   * Disable pointer-events on absolute-positioned children inside the container
-   * that could block the upload overlay (e.g. dark tint overlays).
-   * Skip img, video, and elements with editable content.
-   */
   function disableBlockingChildren(container) {
     Array.from(container.children).forEach(function (child) {
       if (child.tagName === 'IMG' || child.tagName === 'VIDEO') return;
@@ -191,14 +202,24 @@
     });
   }
 
-  // --- Apply Media (preview or saved) ---
+  // --- Apply Media ---
 
   function applyMedia(container, src, isVideo) {
-    var existingImg = container.querySelector('img');
-    var existingVideo = container.querySelector('video');
+    var existingImg = container.querySelector(':scope > img');
+    var existingVideo = container.querySelector(':scope > video');
+
+    // Remove placeholder div children (like the hero gradient)
+    Array.from(container.children).forEach(function (child) {
+      if (child.tagName === 'IMG' || child.tagName === 'VIDEO') return;
+      if (child.classList && child.classList.contains('cms-upload-overlay')) return;
+      if (child.classList && child.classList.contains('cms-file-input')) return;
+      // It's a placeholder div — remove it
+      if (child.tagName === 'DIV' && !child.hasAttribute('data-editable') && !child.hasAttribute('data-media')) {
+        child.remove();
+      }
+    });
 
     if (isVideo) {
-      // Hide existing img
       if (existingImg) existingImg.style.display = 'none';
 
       if (existingVideo) {
@@ -207,10 +228,7 @@
       } else {
         var video = document.createElement('video');
         video.src = src;
-        // Copy dimensional classes from existing img, or use defaults
-        video.className = existingImg
-          ? copyDimClasses(existingImg)
-          : 'w-full h-full object-cover';
+        video.style.cssText = 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0;';
         video.autoplay = true;
         video.loop = true;
         video.muted = true;
@@ -219,7 +237,6 @@
         container.insertBefore(video, overlay || null);
       }
     } else {
-      // Remove video if present
       if (existingVideo) existingVideo.remove();
 
       if (existingImg) {
@@ -229,25 +246,11 @@
         var img = document.createElement('img');
         img.src = src;
         img.alt = '';
-        img.className = 'w-full h-full object-cover';
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
         var overlay2 = container.querySelector('.cms-upload-overlay');
         container.insertBefore(img, overlay2 || null);
       }
     }
-
-    // Remove placeholder backgrounds
-    ['bg-stone-200', 'bg-stone-300', 'bg-stone-400',
-     'bg-stone-600', 'bg-stone-700', 'bg-stone-800'].forEach(function (cls) {
-      container.classList.remove(cls);
-    });
-  }
-
-  function copyDimClasses(el) {
-    return Array.from(el.classList).filter(function (cls) {
-      return cls.startsWith('w-') || cls.startsWith('h-') ||
-             cls.startsWith('aspect-') || cls === 'object-cover' ||
-             cls === 'object-contain';
-    }).join(' ') || 'w-full h-full object-cover';
   }
 
   // --- Save ---
@@ -257,13 +260,11 @@
     editBtn.disabled = true;
 
     try {
-      // Collect texts
       var texts = {};
       document.querySelectorAll('[data-editable]').forEach(function (el) {
         texts[el.dataset.editable] = el.innerHTML;
       });
 
-      // Load existing content to merge
       var allContent = {};
       try {
         var res = await fetch('/api/content');
@@ -275,7 +276,6 @@
       var existing = allContent.pages[pageKey] || {};
       var media = existing.media || {};
 
-      // Upload pending files
       var keys = Object.keys(pendingUploads);
       for (var i = 0; i < keys.length; i++) {
         var key = keys[i];
@@ -289,7 +289,6 @@
 
       allContent.pages[pageKey] = { texts: texts, media: media };
 
-      // Save content
       var saveRes = await fetch('/api/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -319,7 +318,6 @@
       var content = allContent.pages && allContent.pages[pageKey];
       if (!content) return;
 
-      // Apply texts
       if (content.texts) {
         Object.keys(content.texts).forEach(function (key) {
           var el = document.querySelector('[data-editable="' + key + '"]');
@@ -327,18 +325,17 @@
         });
       }
 
-      // Apply media
       if (content.media) {
         Object.keys(content.media).forEach(function (key) {
           var el = document.querySelector('[data-media="' + key + '"]');
           if (!el) return;
           var src = content.media[key];
+          if (!src) return;
           var isVideo = /\.(mp4|webm|mov)$/i.test(src);
           applyMedia(el, src, isVideo);
         });
       }
     } catch (e) {
-      // API not available — hide edit button
       if (editBtn) editBtn.style.display = 'none';
     }
   }
