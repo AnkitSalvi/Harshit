@@ -1,4 +1,4 @@
-const { put, list } = require('@vercel/blob');
+const { put, list, head } = require('@vercel/blob');
 const fs = require('fs');
 const path = require('path');
 
@@ -10,14 +10,23 @@ module.exports = async (req, res) => {
       // Try Vercel Blob first
       try {
         var blobs = await list({ prefix: 'cms/content' });
-        var contentBlob = blobs.blobs.find(function (b) { return b.pathname === CONTENT_BLOB_NAME; });
+        var contentBlob = blobs.blobs.find(function (b) {
+          return b.pathname === CONTENT_BLOB_NAME;
+        });
+
         if (contentBlob) {
-          var response = await fetch(contentBlob.downloadUrl);
-          var data = await response.json();
-          return res.json(data);
+          // For private blobs, use head() to get a fresh downloadUrl
+          var blobMeta = await head(contentBlob.url);
+          var fetchUrl = blobMeta.downloadUrl || contentBlob.downloadUrl || contentBlob.url;
+          var response = await fetch(fetchUrl);
+          if (response.ok) {
+            var data = await response.json();
+            return res.json(data);
+          }
         }
       } catch (e) {
-        // Blob not available — fall through
+        console.error('Blob read error:', e.message);
+        // Fall through to bundled file
       }
 
       // Fallback: read from bundled file
