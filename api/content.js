@@ -1,37 +1,40 @@
-const { put, list } = require('@vercel/blob');
+const { put, list, del } = require('@vercel/blob');
 const fs = require('fs');
 const path = require('path');
 
-const CONTENT_BLOB_NAME = 'cms/content.json';
+const BLOB_PREFIX = 'cms/content';
 
 module.exports = async (req, res) => {
+  var token = process.env.BLOB_READ_WRITE_TOKEN;
+
   try {
     if (req.method === 'GET') {
-      var token = process.env.BLOB_READ_WRITE_TOKEN;
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
 
       // Try Vercel Blob first
       if (token) {
         try {
-          var blobs = await list({ prefix: 'cms/content', token: token });
-          var contentBlob = blobs.blobs.find(function (b) {
-            return b.pathname === CONTENT_BLOB_NAME;
+          var blobs = await list({ prefix: BLOB_PREFIX, token: token });
+          // Find the most recent content blob
+          var contentBlobs = blobs.blobs.filter(function (b) {
+            return b.pathname.startsWith(BLOB_PREFIX);
           });
 
-          if (contentBlob) {
-            // Use the blob URL with cache-busting to avoid stale CDN responses
-            var fetchUrl = contentBlob.url;
-            var sep = fetchUrl.includes('?') ? '&' : '?';
-            fetchUrl += sep + '_t=' + Date.now();
+          if (contentBlobs.length > 0) {
+            // Sort by uploadedAt descending to get latest
+            contentBlobs.sort(function (a, b) {
+              return new Date(b.uploadedAt) - new Date(a.uploadedAt);
+            });
 
-            var response = await fetch(fetchUrl, {
-              headers: { 'Authorization': 'Bearer ' + token },
-              cache: 'no-store'
+            var latest = contentBlobs[0];
+
+            // Fetch content using Bearer auth
+            var response = await fetch(latest.url, {
+              headers: { 'Authorization': 'Bearer ' + token }
             });
 
             if (response.ok) {
               var data = await response.json();
-              // Set no-cache headers on our response too
-              res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
               return res.json(data);
             }
           }
@@ -54,15 +57,27 @@ module.exports = async (req, res) => {
       var body = req.body;
       var jsonStr = JSON.stringify(body, null, 2);
 
-      var blob = await put(CONTENT_BLOB_NAME, jsonStr, {
+      // Delete ALL old content blobs first
+      try {
+        var oldBlobs = await list({ prefix: BLOB_PREFIX, token: token });
+        var toDelete = oldBlobs.blobs
+          .filter(function (b) { return b.pathname.startsWith(BLOB_PREFIX); })
+          .map(function (b) { return b.url; });
+        if (toDelete.length > 0) {
+          await del(toDelete, { token: token });
+        }
+      } catch (e) {
+        console.error('Blob cleanup error:', e.message);
+      }
+
+      // Write new blob with random suffix — guarantees unique URL, no CDN cache
+      var blob = await put(BLOB_PREFIX + '.json', jsonStr, {
         access: 'private',
         contentType: 'application/json',
-        addRandomSuffix: false,
-        allowOverwrite: true,
-        token: process.env.BLOB_READ_WRITE_TOKEN
+        addRandomSuffix: true,
+        token: token
       });
 
-      // Return no-cache headers
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
       return res.json({ success: true, url: blob.url });
     }
