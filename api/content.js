@@ -15,10 +15,12 @@ module.exports = async (req, res) => {
         });
 
         if (contentBlob) {
-          // For private blobs, use head() to get a fresh downloadUrl
-          var blobMeta = await head(contentBlob.url);
-          var fetchUrl = blobMeta.downloadUrl || contentBlob.downloadUrl || contentBlob.url;
-          var response = await fetch(fetchUrl);
+          // Private blobs require the token for fetch
+          var token = process.env.BLOB_READ_WRITE_TOKEN;
+          var fetchUrl = contentBlob.downloadUrl || contentBlob.url;
+          var response = await fetch(fetchUrl, {
+            headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+          });
           if (response.ok) {
             var data = await response.json();
             return res.json(data);
@@ -26,7 +28,6 @@ module.exports = async (req, res) => {
         }
       } catch (e) {
         console.error('Blob read error:', e.message);
-        // Fall through to bundled file
       }
 
       // Fallback: read from bundled file

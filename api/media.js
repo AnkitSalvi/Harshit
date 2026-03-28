@@ -18,17 +18,20 @@ module.exports = async (req, res) => {
       return res.status(404).json({ error: 'File not found' });
     }
 
-    // Fetch the blob content using the downloadUrl (works for private stores)
-    var response = await fetch(blob.downloadUrl);
+    // Private blobs require token for fetch
+    var token = process.env.BLOB_READ_WRITE_TOKEN;
+    var fetchUrl = blob.downloadUrl || blob.url;
+    var response = await fetch(fetchUrl, {
+      headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+    });
+
     if (!response.ok) {
       return res.status(502).json({ error: 'Failed to fetch blob' });
     }
 
-    // Set content type and cache headers
     res.setHeader('Content-Type', blob.contentType || 'application/octet-stream');
     res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
 
-    // Pipe the response
     var buffer = Buffer.from(await response.arrayBuffer());
     return res.send(buffer);
   } catch (err) {
