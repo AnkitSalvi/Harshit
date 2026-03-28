@@ -11,18 +11,19 @@ module.exports = async (req, res) => {
   }
 
   try {
-    var blobs = await list({ prefix: filePath });
+    var token = process.env.BLOB_READ_WRITE_TOKEN;
+    var blobs = await list({ prefix: filePath, token: token });
     var blob = blobs.blobs.find(function (b) { return b.pathname === filePath; });
 
     if (!blob) {
       return res.status(404).json({ error: 'File not found' });
     }
 
-    // Private blobs require token for fetch
-    var token = process.env.BLOB_READ_WRITE_TOKEN;
-    var fetchUrl = blob.downloadUrl || blob.url;
+    // Fetch with auth and cache-busting
+    var fetchUrl = blob.url + (blob.url.includes('?') ? '&' : '?') + '_t=' + Date.now();
     var response = await fetch(fetchUrl, {
-      headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+      headers: { 'Authorization': 'Bearer ' + token },
+      cache: 'no-store'
     });
 
     if (!response.ok) {

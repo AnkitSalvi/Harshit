@@ -272,7 +272,7 @@
 
       var allContent = {};
       try {
-        var res = await fetch('/api/content');
+        var res = await fetch('/api/content?_t=' + Date.now());
         allContent = await res.json();
       } catch (e) { /* ignore */ }
 
@@ -316,7 +316,7 @@
 
   async function loadContent() {
     try {
-      var res = await fetch('/api/content');
+      var res = await fetch('/api/content?_t=' + Date.now());
       if (!res.ok) throw new Error('API unavailable');
       var allContent = await res.json();
       var pageKey = getPageKey();

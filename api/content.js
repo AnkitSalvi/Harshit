@@ -1,4 +1,4 @@
-const { put, list, head } = require('@vercel/blob');
+const { put, list } = require('@vercel/blob');
 const fs = require('fs');
 const path = require('path');
 
@@ -7,27 +7,37 @@ const CONTENT_BLOB_NAME = 'cms/content.json';
 module.exports = async (req, res) => {
   try {
     if (req.method === 'GET') {
-      // Try Vercel Blob first
-      try {
-        var blobs = await list({ prefix: 'cms/content' });
-        var contentBlob = blobs.blobs.find(function (b) {
-          return b.pathname === CONTENT_BLOB_NAME;
-        });
+      var token = process.env.BLOB_READ_WRITE_TOKEN;
 
-        if (contentBlob) {
-          // Private blobs require the token for fetch
-          var token = process.env.BLOB_READ_WRITE_TOKEN;
-          var fetchUrl = contentBlob.downloadUrl || contentBlob.url;
-          var response = await fetch(fetchUrl, {
-            headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+      // Try Vercel Blob first
+      if (token) {
+        try {
+          var blobs = await list({ prefix: 'cms/content', token: token });
+          var contentBlob = blobs.blobs.find(function (b) {
+            return b.pathname === CONTENT_BLOB_NAME;
           });
-          if (response.ok) {
-            var data = await response.json();
-            return res.json(data);
+
+          if (contentBlob) {
+            // Use the blob URL with cache-busting to avoid stale CDN responses
+            var fetchUrl = contentBlob.url;
+            var sep = fetchUrl.includes('?') ? '&' : '?';
+            fetchUrl += sep + '_t=' + Date.now();
+
+            var response = await fetch(fetchUrl, {
+              headers: { 'Authorization': 'Bearer ' + token },
+              cache: 'no-store'
+            });
+
+            if (response.ok) {
+              var data = await response.json();
+              // Set no-cache headers on our response too
+              res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+              return res.json(data);
+            }
           }
+        } catch (e) {
+          console.error('Blob read error:', e.message);
         }
-      } catch (e) {
-        console.error('Blob read error:', e.message);
       }
 
       // Fallback: read from bundled file
@@ -48,9 +58,12 @@ module.exports = async (req, res) => {
         access: 'private',
         contentType: 'application/json',
         addRandomSuffix: false,
-        allowOverwrite: true
+        allowOverwrite: true,
+        token: process.env.BLOB_READ_WRITE_TOKEN
       });
 
+      // Return no-cache headers
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
       return res.json({ success: true, url: blob.url });
     }
 
