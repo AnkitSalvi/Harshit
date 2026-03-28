@@ -159,9 +159,15 @@ body.cms-editing .hero-bottom [data-editable] {
   pointer-events: auto;
 }
 
-/* Ensure project card text is editable above overlay */
+/* Project cards: let clicks pass through to upload overlay,
+   but keep editable text clickable */
 body.cms-editing .project-card-content {
   z-index: 25 !important;
+  pointer-events: none;
+}
+
+body.cms-editing .project-card-content [data-editable] {
+  pointer-events: auto;
 }
 
 body.cms-editing .project-card-overlay {
