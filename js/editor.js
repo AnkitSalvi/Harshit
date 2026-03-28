@@ -107,6 +107,11 @@
   }
 
   function blockLinks(e) {
+    // Don't block clicks on upload overlays or file inputs — browsers need
+    // a clean user gesture to open the file dialog via input.click()
+    if (e.target.closest('.cms-upload-overlay') || e.target.closest('.cms-file-input')) {
+      return;
+    }
     var link = e.target.closest('a');
     if (link && !e.target.closest('#cms-edit-btn')) {
       e.preventDefault();
