@@ -1,6 +1,11 @@
 {
   "framework": null,
   "buildCommand": "",
-  "installCommand": "",
-  "outputDirectory": "."
+  "installCommand": "npm install",
+  "outputDirectory": ".",
+  "functions": {
+    "api/upload.js": {
+      "maxDuration": 30
+    }
+  }
 }
