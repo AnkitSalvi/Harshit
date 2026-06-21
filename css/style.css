@@ -279,123 +279,127 @@ p {
     object-fit: cover;
 }
 
-.hero-content {
-    position: relative;
+/* Legibility scrims — keep dark text readable over any hero image */
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
     z-index: 1;
-    text-align: center;
+    pointer-events: none;
+    background:
+        linear-gradient(to bottom, rgba(244,239,230,0.55) 0%, rgba(244,239,230,0) 22%),
+        linear-gradient(to top, rgba(244,239,230,0.50) 0%, rgba(244,239,230,0) 38%);
+}
+
+/* Top bar — brand left, nav right */
+.hero-topbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 3;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    padding: 0 24px;
-}
-
-.hero-title {
-    font-family: 'Julius Sans One', sans-serif;
-    font-weight: 400;
-    font-size: 64px;
-    line-height: 1;
-    color: var(--accent);
-    letter-spacing: 0.045em;
-    margin: 0;
-}
-
-@media (min-width: 640px) {
-    .hero-title {
-        font-size: 88px;
-    }
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 28px 32px;
 }
 
 @media (min-width: 1024px) {
-    .hero-title {
-        font-size: 128px;
+    .hero-topbar {
+        padding: 40px 56px;
     }
 }
 
-.hero-subtitle {
-    font-family: 'Inter', system-ui, sans-serif;
-    font-size: 12px;
-    font-weight: 400;
-    color: var(--ink-soft);
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    margin-top: 32px;
-}
-
-@media (min-width: 640px) {
-    .hero-subtitle {
-        font-size: 14px;
-    }
-}
-
-.hero-divider {
-    width: 30px;
-    height: 2px;
-    background-color: var(--sand);
-    margin: 32px auto;
-    opacity: 0.6;
-}
-
-.hero-nav {
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    margin-top: 8px;
-}
-
-@media (min-width: 640px) {
-    .hero-nav {
-        gap: 56px;
-    }
-}
-
-.hero-nav a {
+.hero-brand {
     font-family: 'Inter', system-ui, sans-serif;
     font-size: 13px;
-    font-weight: 400;
-    color: var(--ink-soft);
-    letter-spacing: 0.2em;
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: 0.28em;
     text-transform: uppercase;
+    color: var(--ink);
     text-decoration: none;
     transition: opacity 0.3s ease;
 }
 
-@media (min-width: 640px) {
-    .hero-nav a {
-        font-size: 14px;
-    }
+.hero-brand:hover {
+    opacity: 0.65;
 }
 
-.hero-nav a:hover {
-    opacity: 0.6;
-}
-
-.hero-bottom {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    padding: 0 32px 32px;
-    z-index: 1;
+.hero-topnav {
+    display: none;
+    align-items: center;
+    gap: 40px;
 }
 
 @media (min-width: 1024px) {
-    .hero-bottom {
-        padding: 0 48px 40px;
+    .hero-topnav {
+        display: flex;
     }
 }
 
-.hero-bottom-text {
+.hero-topnav a {
     font-family: 'Inter', system-ui, sans-serif;
     font-size: 12px;
-    font-weight: 400;
-    color: var(--ink-soft);
-    letter-spacing: 0.15em;
+    font-weight: 500;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+.hero-topnav a:hover {
+    opacity: 0.6;
+}
+
+/* Hero hamburger (mobile) — dark over image */
+.hero-topbar .nav-hamburger span {
+    background-color: var(--ink);
+}
+
+/* Statement — big serif, bottom-left */
+.hero-statement-wrap {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 3;
+    padding: 0 32px 56px;
+    max-width: 760px;
+}
+
+@media (min-width: 1024px) {
+    .hero-statement-wrap {
+        padding: 0 56px 72px;
+    }
+}
+
+.hero-statement {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0 0 32px;
+}
+
+@media (min-width: 640px) {
+    .hero-statement {
+        font-size: 64px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .hero-statement {
+        font-size: 80px;
+    }
+}
+
+/* Pill on the hero sits over the image — give it a readable backing */
+.hero-statement-wrap .btn-pill-outline {
+    border-color: var(--ink);
+    color: var(--ink);
 }
 
 /* ----------------------------------------

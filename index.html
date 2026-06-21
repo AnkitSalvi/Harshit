@@ -16,37 +16,46 @@
 </head>
 <body>
 
-    <!-- Hero Section — Full Viewport -->
+    <!-- Hero Section — Full Viewport, editorial landscape layout -->
     <section class="hero">
         <!-- Background Image -->
         <div class="hero-bg" data-media="hero-bg">
             <!-- Placeholder gradient; replaced by uploaded image -->
-            <div style="width:100%;height:100%;background:linear-gradient(150deg,#d9c39e 0%,#cbab82 28%,#b98c6d 58%,#8a6f52 100%);"></div>
+            <div style="width:100%;height:100%;background:linear-gradient(150deg,#e7dcc8 0%,#d6c4a6 40%,#c3ad8c 72%,#b09a7e 100%);"></div>
         </div>
 
-        <!-- Content -->
-        <div class="hero-content">
-            <h1 class="hero-title" data-editable="hero-title">Studio<br>Name</h1>
+        <!-- Top bar: brand left, nav right -->
+        <header class="hero-topbar">
+            <a href="index.html" class="hero-brand" data-editable="hero-title">Studio<br>Name</a>
 
-            <p class="hero-subtitle" data-editable="hero-subtitle">Architecture | Interior Design | Urban Design</p>
-
-            <div class="hero-divider"></div>
-
-            <nav class="hero-nav">
-                <a href="projects.html">Projects</a>
-                <a href="about.html">About</a>
+            <nav class="hero-topnav">
+                <a href="projects.html">Work</a>
+                <a href="about.html">Studio</a>
+                <a href="about.html#identity">Journal</a>
+                <a href="projects.html">Research</a>
                 <a href="contact.html">Contact</a>
             </nav>
 
-            <a href="projects.html" class="btn-pill-outline" style="margin-top:40px;">Explore Projects</a>
-        </div>
+            <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </header>
 
-        <!-- Bottom Info -->
-        <div class="hero-bottom">
-            <span class="hero-bottom-text" data-editable="hero-location">City, State</span>
-            <span class="hero-bottom-text" data-editable="hero-est">Est. 2020</span>
+        <!-- Statement: big serif, bottom-left -->
+        <div class="hero-statement-wrap">
+            <h1 class="hero-statement" data-editable="hero-statement">We design places that belong.</h1>
+            <a href="projects.html" class="btn-pill-outline">Explore Work</a>
         </div>
     </section>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="projects.html">Work</a>
+        <a href="about.html">Studio</a>
+        <a href="contact.html">Contact</a>
+    </div>
 
     <script src="js/main.js"></script>
     <script src="js/editor.js"></script>
