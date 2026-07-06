@@ -120,11 +120,12 @@ p {
 }
 
 .nav-logo {
-    font-family: 'Julius Sans One', sans-serif;
-    font-size: 24px;
-    font-weight: 400;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
     color: var(--ink);
-    letter-spacing: 0.025em;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
     text-decoration: none;
     transition: opacity 0.3s ease;
 }
@@ -147,10 +148,10 @@ p {
 
 .nav-link {
     font-family: 'Inter', system-ui, sans-serif;
-    font-size: 14px;
-    font-weight: 400;
+    font-size: 12px;
+    font-weight: 500;
     color: var(--ink);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     text-decoration: none;
     position: relative;
@@ -162,7 +163,11 @@ p {
 }
 
 .nav-link.active {
-    font-weight: 500;
+    font-weight: 600;
+}
+
+.nav-link.active::after {
+    width: 100%;
 }
 
 .nav-link::after {
@@ -1478,6 +1483,10 @@ p {
 }
 
 .footer-brand .nav-logo {
+    font-family: 'Julius Sans One', sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.025em;
+    text-transform: none;
     color: var(--paper);
     font-size: 24px;
     display: block;
