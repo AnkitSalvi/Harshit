@@ -3,9 +3,7 @@
     "index.html": {
       "texts": {
         "hero-title": "IKIgai<br>Name",
-        "hero-subtitle": "Architecture | Interior Design | Urban Design",
-        "hero-location": "City, State",
-        "hero-est": "Est. 2020"
+        "hero-statement": "We design places that belong."
       },
       "media": {}
     },
@@ -41,7 +39,9 @@
         "footer-phone": "+1 234 567 890",
         "footer-social-1": "Instagram"
       },
-      "media": {}
+      "media": {
+        "proj3-card-img": "/uploads/1783346649020-zyfo0cs.jpeg"
+      }
     },
     "project.html": {
       "texts": {
@@ -80,6 +80,35 @@
         "proj-cta-title": "Interested in working together?",
         "proj-cta-desc": "Let's discuss your project and explore how we can create something extraordinary together.",
         "footer-logo": "IKIGIA&nbsp;Name",
+        "footer-desc": "Architecture and Interior Design Studio based in City, State.",
+        "footer-location": "City, State",
+        "footer-country": "Country",
+        "footer-email": "hello@example.com",
+        "footer-phone": "+1 234 567 890",
+        "footer-social-1": "Instagram"
+      },
+      "media": {}
+    },
+    "contact.html": {
+      "texts": {
+        "nav-logo": "Studio Name",
+        "contact-label": "Get In Touch",
+        "contact-heading": "Contact Us",
+        "contact-subtitle": "Let's discuss your next project. We'd love to hear from you and explore how we can bring your vision to life.",
+        "form-heading": "Get in Touch",
+        "info-heading": "Studio Information",
+        "info-address-label": "Address",
+        "info-studio-name": "Studio Name",
+        "info-address-1": "Street Address, Building Name",
+        "info-address-2": "City, State ZIP",
+        "info-email-label": "Email",
+        "info-email": "hello@example.com",
+        "info-phone-label": "Phone",
+        "info-phone": "+1 234 567 890",
+        "info-hours-label": "Office Hours",
+        "info-hours": "Monday - Friday: 10:00 AM - 6:00 PM<br>Saturday: By Appointment",
+        "info-note-text": "We typically respond to inquiries within 24-48 hours.",
+        "footer-logo": "Studio Name",
         "footer-desc": "Architecture and Interior Design Studio based in City, State.",
         "footer-location": "City, State",
         "footer-country": "Country",
