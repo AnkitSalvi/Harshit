@@ -1,9 +1,12 @@
 const { put } = require('@vercel/blob');
+const auth = require('./_auth');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  if (auth.requireAuth(req, res)) return;
 
   try {
     // Vercel serverless receives the file as a raw body when using multipart

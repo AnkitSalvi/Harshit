@@ -4,9 +4,17 @@
   var editMode = false;
   var pendingUploads = {};
   var editBtn = null;
+  var logoutBtn = null;
   var toast = null;
   // Store original inline styles so we can restore them on exit
   var originalStyles = [];
+
+  // Thrown when the server rejects a write because the admin session has gone
+  function SessionExpired() {
+    this.name = 'SessionExpired';
+    this.message = 'Session expired';
+  }
+  SessionExpired.prototype = Object.create(Error.prototype);
 
   function getProjectId() {
     var match = /[?&]id=(\d+)/.exec(window.location.search);
@@ -274,9 +282,36 @@
       }
     });
 
+    logoutBtn = document.createElement('button');
+    logoutBtn.id = 'cms-logout-btn';
+    logoutBtn.textContent = 'Log out';
+    document.body.appendChild(logoutBtn);
+
+    logoutBtn.addEventListener('click', logout);
+
     toast = document.createElement('div');
     toast.id = 'cms-toast';
     document.body.appendChild(toast);
+  }
+
+  async function logout() {
+    logoutBtn.disabled = true;
+    try {
+      await fetch('/api/logout', { method: 'POST', credentials: 'same-origin' });
+    } catch (e) { /* clearing the cookie client-side isn't possible; reload anyway */ }
+    window.location.reload();
+  }
+
+  /** The admin tools only exist for a signed-in admin. */
+  async function isAdmin() {
+    try {
+      var res = await fetch('/api/session?_t=' + Date.now(), { credentials: 'same-origin' });
+      if (!res.ok) return false;
+      var data = await res.json();
+      return data.authenticated === true;
+    } catch (e) {
+      return false;
+    }
   }
 
   function showToast(message, type) {
@@ -550,7 +585,12 @@
         var key = keys[i];
         var formData = new FormData();
         formData.append('file', pendingUploads[key].file);
-        var uploadRes = await fetch('/api/upload', { method: 'POST', body: formData });
+        var uploadRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+          credentials: 'same-origin'
+        });
+        if (uploadRes.status === 401) throw new SessionExpired();
         if (!uploadRes.ok) throw new Error('Upload failed for ' + key);
         var uploadData = await uploadRes.json();
         media[key] = uploadData.path;
@@ -598,15 +638,25 @@
       var saveRes = await fetch('/api/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify(allContent)
       });
+      if (saveRes.status === 401) throw new SessionExpired();
       if (!saveRes.ok) throw new Error('Save failed');
 
       exitEditMode();
       showToast('Changes saved');
     } catch (err) {
       console.error('Save error:', err);
-      showToast('Save failed \u2014 please try again', 'error');
+      if (err instanceof SessionExpired) {
+        showToast('Session expired \u2014 sign in again', 'error');
+        setTimeout(function () {
+          window.location.href = '/dashboard-login?next=' +
+            encodeURIComponent(window.location.pathname + window.location.search);
+        }, 1500);
+      } else {
+        showToast('Save failed \u2014 please try again', 'error');
+      }
       editBtn.textContent = 'Save';
     }
 
@@ -691,8 +741,11 @@
   }
 
   // --- Init ---
-  document.addEventListener('DOMContentLoaded', function () {
-    createUI();
+  document.addEventListener('DOMContentLoaded', async function () {
+    // Everyone gets the saved content; only the admin gets the editing tools.
+    // The server enforces this too — /api/content POST and /api/upload are
+    // rejected without a valid session, so hiding the button is only cosmetic.
+    if (await isAdmin()) createUI();
     loadContent();
   });
 })();

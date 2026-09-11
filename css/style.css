@@ -1872,3 +1872,123 @@ button:focus-visible {
     .site-nav, .site-footer, .mobile-menu { display: none; }
     section { page-break-inside: avoid; }
 }
+
+/* ----------------------------------------
+   Admin Login (/dashboard-login)
+   ---------------------------------------- */
+.login-page {
+    min-height: 100vh;
+    background-color: var(--paper-2);
+}
+
+.login-shell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 48px 24px;
+    box-sizing: border-box;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    box-sizing: border-box;
+    padding: 40px 32px;
+    background-color: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+
+@media (min-width: 600px) {
+    .login-card {
+        padding: 48px 44px;
+    }
+}
+
+.login-brand {
+    display: inline-block;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    margin-bottom: 40px;
+}
+
+.login-brand:hover {
+    opacity: 0.7;
+}
+
+.login-card .login-label {
+    margin: 0 0 12px;
+    font-size: 11px;
+}
+
+.login-card h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 30px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.15;
+    margin: 0 0 12px;
+}
+
+.login-intro {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin: 0 0 32px;
+}
+
+.login-error {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--accent);
+    line-height: 1.5;
+    margin: -8px 0 20px;
+}
+
+.login-submit {
+    width: 100%;
+    padding: 14px 30px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--paper);
+    background-color: var(--ink);
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.login-submit:hover:not(:disabled) {
+    background-color: var(--terracotta);
+    border-color: var(--terracotta);
+}
+
+.login-submit:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.login-back {
+    display: inline-block;
+    margin-top: 28px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.login-back:hover {
+    color: var(--ink);
+}

@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const auth = require('./api/_auth');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,8 +15,11 @@ if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
 
 // Middleware
 app.use(express.json({ limit: '5mb' }));
-app.use(express.static(__dirname));
-app.use('/uploads', express.static(uploadsDir));
+
+// Clean URL for the admin login page (mirrors the rewrite in vercel.json)
+app.get('/dashboard-login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dashboard-login.html'));
+});
 
 // File upload config
 const storage = multer.diskStorage({
@@ -40,14 +44,42 @@ const upload = multer({
   }
 });
 
-// Upload endpoint
-app.post('/api/upload', upload.single('file'), (req, res) => {
+// --- Admin auth ---
+app.post('/api/login', async (req, res) => {
+  const body = req.body || {};
+  if (!auth.checkCredentials(body.username, body.password)) {
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    return res.status(401).json({ error: 'Incorrect username or password' });
+  }
+  res.setHeader('Set-Cookie', auth.loginCookie(req));
+  res.setHeader('Cache-Control', 'no-store');
+  res.json({ success: true });
+});
+
+app.post('/api/logout', (req, res) => {
+  res.setHeader('Set-Cookie', auth.logoutCookie(req));
+  res.setHeader('Cache-Control', 'no-store');
+  res.json({ success: true });
+});
+
+app.get('/api/session', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.json({ authenticated: auth.isAuthenticated(req) });
+});
+
+// Upload endpoint — admin only
+app.post('/api/upload', (req, res, next) => {
+  if (auth.requireAuth(req, res)) return;
+  next();
+}, upload.single('file'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
   res.json({ filename: req.file.filename, path: `/uploads/${req.file.filename}` });
 });
 
-// Save content
+// Save content — admin only
 app.post('/api/content', (req, res) => {
+  if (auth.requireAuth(req, res)) return;
+
   const contentPath = path.join(dataDir, 'content.json');
   fs.writeFileSync(contentPath, JSON.stringify(req.body, null, 2));
   res.json({ success: true });
@@ -76,6 +108,19 @@ app.get('/api/media', (req, res) => {
   }
   return res.status(404).json({ error: 'File not found' });
 });
+
+// --- Static files (after the API routes, so only unmatched paths get here) ---
+
+// Without this guard express.static would hand out the server's own source,
+// including the admin credentials in api/_auth.js.
+const PRIVATE_PATHS = /^\/(api|node_modules|\.|server\.js|package(-lock)?\.json|vercel\.json)/;
+app.use((req, res, next) => {
+  if (PRIVATE_PATHS.test(req.path)) return res.status(404).send('Not found');
+  next();
+});
+
+app.use(express.static(__dirname));
+app.use('/uploads', express.static(uploadsDir));
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

@@ -7,5 +7,11 @@
     "api/upload.js": {
       "maxDuration": 30
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/dashboard-login",
+      "destination": "/dashboard-login.html"
+    }
+  ]
 }

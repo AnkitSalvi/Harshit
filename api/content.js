@@ -1,6 +1,7 @@
 const { put, list, del } = require('@vercel/blob');
 const fs = require('fs');
 const path = require('path');
+const auth = require('./_auth');
 
 const BLOB_PREFIX = 'cms/content';
 
@@ -54,6 +55,9 @@ module.exports = async (req, res) => {
     }
 
     if (req.method === 'POST') {
+      // Reading content is public; only a signed-in admin may overwrite it
+      if (auth.requireAuth(req, res)) return;
+
       var body = req.body;
       var jsonStr = JSON.stringify(body, null, 2);
 

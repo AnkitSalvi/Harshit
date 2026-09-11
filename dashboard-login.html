@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Login — Studio Name</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="login-page">
+
+    <main class="login-shell">
+        <section class="login-card">
+            <a href="index.html" class="login-brand">Studio Name</a>
+
+            <p class="label-caps login-label">Admin</p>
+            <h1>Sign in to edit</h1>
+            <p class="login-intro">Editing is available to the studio administrator. Visitors browse the site as usual.</p>
+
+            <form id="login-form" novalidate>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" autocomplete="current-password" required>
+                </div>
+
+                <p class="login-error" id="login-error" role="alert" hidden></p>
+
+                <button type="submit" class="login-submit" id="login-submit">Sign In</button>
+            </form>
+
+            <a href="index.html" class="login-back">&larr; Back to site</a>
+        </section>
+    </main>
+
+    <script>
+    (function () {
+        var form = document.getElementById('login-form');
+        var button = document.getElementById('login-submit');
+        var error = document.getElementById('login-error');
+
+        // Where to land after signing in: ?next=/about.html, else the home page
+        function nextPath() {
+            var match = /[?&]next=([^&]+)/.exec(window.location.search);
+            if (!match) return 'index.html';
+            var target = decodeURIComponent(match[1]);
+            // Only same-origin relative paths, never an absolute URL from the query string
+            if (!/^\/[^/\\]/.test(target)) return 'index.html';
+            return target;
+        }
+
+        function showError(message) {
+            error.textContent = message;
+            error.hidden = false;
+        }
+
+        form.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            error.hidden = true;
+            button.disabled = true;
+            button.textContent = 'Signing in…';
+
+            try {
+                var res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({
+                        username: document.getElementById('username').value,
+                        password: document.getElementById('password').value
+                    })
+                });
+
+                if (res.ok) {
+                    window.location.href = nextPath();
+                    return;
+                }
+
+                var data = {};
+                try { data = await res.json(); } catch (e) { /* ignore */ }
+                showError(data.error || 'Sign in failed — please try again.');
+            } catch (e) {
+                showError('Could not reach the server — please try again.');
+            }
+
+            button.disabled = false;
+            button.textContent = 'Sign In';
+        });
+    })();
+    </script>
+
+</body>
+</html>
