@@ -8,10 +8,256 @@
   // Store original inline styles so we can restore them on exit
   var originalStyles = [];
 
+  function getProjectId() {
+    var match = /[?&]id=(\d+)/.exec(window.location.search);
+    return match ? match[1] : '1';
+  }
+
   function getPageKey() {
     var page = window.location.pathname.split('/').pop();
     if (!page || page === '') page = 'index.html';
+    // Each project detail page keeps its own content, keyed by ?id=
+    if (page === 'project.html') page += '?id=' + getProjectId();
     return page;
+  }
+
+  /**
+   * Content for a page key, falling back to the content saved before
+   * project pages were split per id, so existing projects keep their
+   * text and images until they are edited individually.
+   */
+  function getPageContent(allContent, pageKey) {
+    var pages = (allContent && allContent.pages) || {};
+    if (pages[pageKey]) return pages[pageKey];
+    if (pageKey.indexOf('project.html?') === 0) return pages['project.html'];
+    return null;
+  }
+
+  // --- Card collections (Projects / Objects grids) ---
+
+  var CARD_COLLECTIONS = {
+    projects: { prefix: 'proj', link: 'project.html?id=', noun: 'Project' },
+    objects:  { prefix: 'obj',  link: null,               noun: 'Object' }
+  };
+
+  function getGrids() {
+    return Array.prototype.slice.call(document.querySelectorAll('[data-collection]'))
+      .filter(function (grid) { return !!CARD_COLLECTIONS[grid.dataset.collection]; });
+  }
+
+  function nextCardIndex(grid) {
+    var max = 0;
+    grid.querySelectorAll('[data-card-index]').forEach(function (card) {
+      var n = parseInt(card.dataset.cardIndex, 10);
+      if (n > max) max = n;
+    });
+    return max + 1;
+  }
+
+  function buildCard(collection, index) {
+    var cfg = CARD_COLLECTIONS[collection];
+    var key = cfg.prefix + index;
+    var card = document.createElement(cfg.link ? 'a' : 'div');
+    card.className = 'project-card';
+    card.dataset.cardIndex = index;
+    card.dataset.cardDynamic = 'true';
+    if (cfg.link) card.href = cfg.link + index;
+
+    card.innerHTML =
+      '<div class="project-card-img" data-media="' + key + '-card-img"></div>' +
+      '<div class="project-card-overlay"></div>' +
+      '<div class="project-card-content">' +
+        '<p class="project-card-tag" data-editable="' + key + '-tag">Category \u2022 Year</p>' +
+        '<h3 class="project-card-title" data-editable="' + key + '-title">New ' + cfg.noun + '</h3>' +
+        '<p class="project-card-desc" data-editable="' + key + '-desc">Add a short description of this ' + cfg.noun.toLowerCase() + '.</p>' +
+        (cfg.link ? '<span class="project-card-link">View Project &rarr;</span>' : '') +
+      '</div>';
+
+    return card;
+  }
+
+  // Turn a card added during this edit session into an editable one
+  function enableCardEditing(card) {
+    card.querySelectorAll('[data-editable]').forEach(function (el) {
+      el.contentEditable = 'true';
+      el.classList.add('cms-editable');
+    });
+    card.querySelectorAll('[data-media]').forEach(function (el) {
+      saveAndPositionMedia(el);
+      disableBlockingSiblings(el);
+      disableBlockingChildren(el);
+      addUploadOverlay(el);
+    });
+    addCardTools(card);
+    relayout();
+  }
+
+  function relayout() {
+    if (window.syncTileGrids) window.syncTileGrids();
+  }
+
+  function gridMetrics(grid) {
+    var styles = window.getComputedStyle(grid);
+    var columns = styles.gridTemplateColumns.split(' ').filter(Boolean);
+    return {
+      count: columns.length,
+      width: parseFloat(columns[0]) || 0,
+      gap: parseFloat(styles.columnGap) || 0
+    };
+  }
+
+  // --- Corner resize ---
+
+  function addResizeHandle(card) {
+    if (card.querySelector('.cms-card-resize')) return;
+
+    var handle = document.createElement('span');
+    handle.className = 'cms-card-resize';
+    handle.title = 'Drag to resize';
+
+    handle.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      var grid = card.closest('[data-collection]');
+      if (!grid) return;
+
+      var metrics = gridMetrics(grid);
+      var rect = card.getBoundingClientRect();
+      var startX = e.clientX;
+
+      handle.setPointerCapture(e.pointerId);
+      document.body.classList.add('cms-resizing');
+
+      function onMove(moveEvent) {
+        // Width only — a tile's height stays as its image or preset sets it
+        var width = rect.width + (moveEvent.clientX - startX);
+        var cols = Math.round((width + metrics.gap) / (metrics.width + metrics.gap));
+        cols = Math.min(Math.max(cols, 1), metrics.count);
+
+        if (cols > 1) {
+          card.dataset.cols = cols;
+        } else {
+          delete card.dataset.cols;
+        }
+
+        relayout();
+      }
+
+      function onUp() {
+        handle.removeEventListener('pointermove', onMove);
+        handle.removeEventListener('pointerup', onUp);
+        handle.removeEventListener('pointercancel', onUp);
+        document.body.classList.remove('cms-resizing');
+        relayout();
+      }
+
+      handle.addEventListener('pointermove', onMove);
+      handle.addEventListener('pointerup', onUp);
+      handle.addEventListener('pointercancel', onUp);
+    });
+
+    card.appendChild(handle);
+  }
+
+  function addCardTools(card) {
+    if (card.querySelector('.cms-card-tools')) return;
+
+    var tools = document.createElement('div');
+    tools.className = 'cms-card-tools';
+
+    var handle = document.createElement('span');
+    handle.className = 'cms-card-drag';
+    handle.title = 'Drag to reorder';
+    handle.innerHTML = '\u2630';
+    tools.appendChild(handle);
+
+    if (card.dataset.cardDynamic === 'true') {
+      var removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'cms-card-remove';
+      removeBtn.title = 'Remove tile';
+      removeBtn.innerHTML = '\u00d7';
+
+      removeBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        card.querySelectorAll('[data-media]').forEach(function (el) {
+          var key = el.dataset.media;
+          if (pendingUploads[key]) {
+            if (pendingUploads[key].objectURL) URL.revokeObjectURL(pendingUploads[key].objectURL);
+            delete pendingUploads[key];
+          }
+        });
+        card.remove();
+        relayout();
+      });
+
+      tools.appendChild(removeBtn);
+    }
+
+    card.appendChild(tools);
+    addResizeHandle(card);
+  }
+
+  // --- Drag to arrange (SortableJS) ---
+
+  var sortables = [];
+
+  function initSorting() {
+    if (typeof Sortable === 'undefined') return;
+
+    getGrids().forEach(function (grid) {
+      sortables.push(Sortable.create(grid, {
+        animation: 160,
+        draggable: '.project-card',
+        handle: '.cms-card-drag',
+        ghostClass: 'cms-card-ghost',
+        onEnd: function () {
+          // Keep the "Add Tile" placeholder at the end of the grid
+          var tile = grid.querySelector('.cms-add-card');
+          if (tile) grid.appendChild(tile);
+          relayout();
+        }
+      }));
+    });
+  }
+
+  function destroySorting() {
+    sortables.forEach(function (sortable) { sortable.destroy(); });
+    sortables = [];
+  }
+
+  function addAddTiles() {
+    getGrids().forEach(function (grid) {
+      var collection = grid.dataset.collection;
+
+      var tile = document.createElement('button');
+      tile.type = 'button';
+      tile.className = 'cms-add-card';
+      tile.innerHTML =
+        '<span class="cms-add-card-inner">' +
+          '<span class="cms-add-card-plus">+</span>' +
+          '<span>Add Tile</span>' +
+        '</span>';
+
+      tile.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var card = buildCard(collection, nextCardIndex(grid));
+        grid.insertBefore(card, tile);
+        enableCardEditing(card);
+      });
+
+      grid.appendChild(tile);
+    });
+  }
+
+  function removeAddTiles() {
+    document.querySelectorAll('.cms-add-card, .cms-card-tools, .cms-card-resize').forEach(function (el) {
+      el.remove();
+    });
+    relayout();
   }
 
   function createUI() {
@@ -64,6 +310,14 @@
       addUploadOverlay(el);
     });
 
+    // Card grids: per-tile controls, an "Add Tile" placeholder, drag to arrange
+    getGrids().forEach(function (grid) {
+      grid.querySelectorAll('.project-card').forEach(addCardTools);
+    });
+    addAddTiles();
+    initSorting();
+    relayout();
+
     // Block link navigation
     document.addEventListener('click', blockLinks, true);
   }
@@ -82,6 +336,9 @@
     document.querySelectorAll('.cms-upload-overlay, .cms-file-input').forEach(function (el) {
       el.remove();
     });
+
+    destroySorting();
+    removeAddTiles();
 
     // Restore pointer events on elements we disabled
     document.querySelectorAll('.cms-no-events').forEach(function (el) {
@@ -210,6 +467,13 @@
   // --- Apply Media ---
 
   function applyMedia(container, src, isVideo) {
+    container.classList.add('has-media');
+
+    // Tiles size themselves from the image, so leave their sizing to CSS
+    var isTile = container.classList.contains('project-card-img');
+    var imgStyle = isTile ? '' : 'width:100%;height:100%;object-fit:cover;';
+    var videoStyle = isTile ? '' : 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0;';
+
     var existingImg = container.querySelector(':scope > img');
     var existingVideo = container.querySelector(':scope > video');
 
@@ -233,7 +497,7 @@
       } else {
         var video = document.createElement('video');
         video.src = src;
-        video.style.cssText = 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0;';
+        video.style.cssText = videoStyle;
         video.autoplay = true;
         video.loop = true;
         video.muted = true;
@@ -251,7 +515,7 @@
         var img = document.createElement('img');
         img.src = src;
         img.alt = '';
-        img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+        img.style.cssText = imgStyle;
         var overlay2 = container.querySelector('.cms-upload-overlay');
         container.insertBefore(img, overlay2 || null);
       }
@@ -278,8 +542,8 @@
 
       if (!allContent.pages) allContent.pages = {};
       var pageKey = getPageKey();
-      var existing = allContent.pages[pageKey] || {};
-      var media = existing.media || {};
+      var existing = getPageContent(allContent, pageKey) || {};
+      var media = Object.assign({}, existing.media || {});
 
       var keys = Object.keys(pendingUploads);
       for (var i = 0; i < keys.length; i++) {
@@ -292,7 +556,44 @@
         media[key] = uploadData.path;
       }
 
-      allContent.pages[pageKey] = { texts: texts, media: media };
+      // Tiles added through the editor, the arrangement, and tile shapes
+      var cards = {};
+      var order = {};
+      var sizes = {};
+
+      getGrids().forEach(function (grid) {
+        var collection = grid.dataset.collection;
+        var added = [];
+        var arrangement = [];
+        var shapes = {};
+
+        grid.querySelectorAll('.project-card[data-card-index]').forEach(function (card) {
+          var index = parseInt(card.dataset.cardIndex, 10);
+          arrangement.push(index);
+          if (card.dataset.cardDynamic === 'true') added.push(index);
+          if (card.dataset.cols) {
+            shapes[index] = { cols: parseInt(card.dataset.cols, 10) };
+          }
+        });
+
+        if (added.length) cards[collection] = added;
+        if (arrangement.length) order[collection] = arrangement;
+        if (Object.keys(shapes).length) sizes[collection] = shapes;
+      });
+
+      // Forget images belonging to tiles that were removed
+      Object.keys(media).forEach(function (key) {
+        if (!/^(proj|obj)\d+-card-img$/.test(key)) return;
+        if (!document.querySelector('[data-media="' + key + '"]')) delete media[key];
+      });
+
+      allContent.pages[pageKey] = {
+        texts: texts,
+        media: media,
+        cards: cards,
+        order: order,
+        sizes: sizes
+      };
 
       var saveRes = await fetch('/api/content', {
         method: 'POST',
@@ -320,8 +621,51 @@
       if (!res.ok) throw new Error('API unavailable');
       var allContent = await res.json();
       var pageKey = getPageKey();
-      var content = allContent.pages && allContent.pages[pageKey];
+      var content = getPageContent(allContent, pageKey);
       if (!content) return;
+
+      if (content.cards) {
+        Object.keys(content.cards).forEach(function (collection) {
+          var grid = document.querySelector('[data-collection="' + collection + '"]');
+          if (!grid || !CARD_COLLECTIONS[collection]) return;
+          content.cards[collection].forEach(function (index) {
+            if (grid.querySelector('[data-card-index="' + index + '"]')) return;
+            grid.appendChild(buildCard(collection, index));
+          });
+        });
+      }
+
+      if (content.order) {
+        Object.keys(content.order).forEach(function (collection) {
+          var grid = document.querySelector('[data-collection="' + collection + '"]');
+          if (!grid) return;
+          content.order[collection].forEach(function (index) {
+            var card = grid.querySelector('[data-card-index="' + index + '"]');
+            if (card) grid.appendChild(card);
+          });
+        });
+      }
+
+      if (content.sizes) {
+        Object.keys(content.sizes).forEach(function (collection) {
+          var grid = document.querySelector('[data-collection="' + collection + '"]');
+          if (!grid) return;
+          var shapes = content.sizes[collection];
+          Object.keys(shapes).forEach(function (index) {
+            var card = grid.querySelector('[data-card-index="' + index + '"]');
+            if (!card) return;
+
+            var shape = shapes[index];
+            // 'wide' is the old preset name for a two-column tile
+            if (typeof shape === 'string') {
+              if (shape === 'wide') card.dataset.cols = 2;
+              return;
+            }
+
+            if (shape.cols > 1) card.dataset.cols = shape.cols;
+          });
+        });
+      }
 
       if (content.texts) {
         Object.keys(content.texts).forEach(function (key) {
@@ -340,6 +684,7 @@
           applyMedia(el, src, isVideo);
         });
       }
+      relayout();
     } catch (e) {
       if (editBtn) editBtn.style.display = 'none';
     }

@@ -41,6 +41,27 @@
       },
       "media": {
         "proj3-card-img": "/uploads/1783346649020-zyfo0cs.jpeg"
+      },
+      "cards": {},
+      "order": {
+        "projects": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "sizes": {
+        "projects": {
+          "1": {
+            "cols": 3
+          },
+          "3": {
+            "cols": 2
+          }
+        }
       }
     },
     "project.html": {
@@ -92,10 +113,10 @@
     "contact.html": {
       "texts": {
         "nav-logo": "Studio Name",
+        "contact-badge": "Studio Name",
         "contact-label": "Get In Touch",
         "contact-heading": "Contact Us",
         "contact-subtitle": "Let's discuss your next project. We'd love to hear from you and explore how we can bring your vision to life.",
-        "form-heading": "Get in Touch",
         "info-heading": "Studio Information",
         "info-address-label": "Address",
         "info-studio-name": "Studio Name",
@@ -108,6 +129,39 @@
         "info-hours-label": "Office Hours",
         "info-hours": "Monday - Friday: 10:00 AM - 6:00 PM<br>Saturday: By Appointment",
         "info-note-text": "We typically respond to inquiries within 24-48 hours.",
+        "form-heading": "Get in Touch"
+      },
+      "media": {
+        "contact-image": "/uploads/1788610014611-ifs6gxk.jpg"
+      }
+    },
+    "objects.html": {
+      "texts": {
+        "nav-logo": "Studio Name",
+        "objects-label": "Furniture &amp; Product Design",
+        "objects-heading": "Objects",
+        "objects-subtitle": "Furniture and product designs drawn from the same material language as our spaces — made in small batches with craftspeople we know by name.",
+        "obj2-tag": "Tables • 2025",
+        "obj2-title": "Monolith Dining Table",
+        "obj2-desc": "A single slab of locally quarried stone resting on a blackened steel base — weight and lightness held in balance.",
+        "obj1-tag": "Seating • 2025",
+        "obj1-title": "Dune Lounge Chair",
+        "obj1-desc": "A low-slung lounge chair in solid teak with a hand-woven cane back, shaped for long afternoons and softened light.",
+        "obj3-tag": "Lighting • 2025",
+        "obj3-title": "Ember Pendant",
+        "obj3-desc": "A hand-spun brass pendant with a raw clay diffuser that casts a warm, grainy glow across a room.",
+        "obj4-tag": "Storage • 2024",
+        "obj4-title": "Terra Sideboard",
+        "obj4-desc": "A long, quiet sideboard in fluted oak with lime-plaster inlays and recessed pulls carved from the door face.",
+        "obj5-tag": "Objects • 2025",
+        "obj5-title": "Kiln Vessel Series",
+        "obj5-desc": "A family of wheel-thrown stoneware vessels finished in ash glaze — no two pieces leave the kiln alike.",
+        "obj6-tag": "Textiles • 2025",
+        "obj6-title": "Loom Rug Collection",
+        "obj6-desc": "Handloomed wool rugs in undyed desert tones, woven on pit looms with a slow, irregular weave.",
+        "objects-cta-label": "Commissions",
+        "objects-cta-title": "Looking for a bespoke piece?",
+        "objects-cta-desc": "We design and produce custom furniture and objects for private clients and projects. Tell us what you have in mind.",
         "footer-logo": "Studio Name",
         "footer-desc": "Architecture and Interior Design Studio based in City, State.",
         "footer-location": "City, State",
@@ -116,7 +170,65 @@
         "footer-phone": "+1 234 567 890",
         "footer-social-1": "Instagram"
       },
-      "media": {}
+      "media": {},
+      "cards": {},
+      "order": {
+        "objects": [
+          2,
+          1,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "sizes": {
+        "objects": {
+          "1": {
+            "cols": 2
+          },
+          "3": {
+            "cols": 3
+          }
+        }
+      }
+    },
+    "about.html": {
+      "texts": {
+        "nav-logo": "Studio Name",
+        "about-heading": "About Studio Name",
+        "about-para-1": "Founded in 2020 in the historic city, the studio emerged from a passion for creating spaces that honor rich architectural heritage while embracing contemporary design principles.",
+        "about-hero-cta": "Work With Us",
+        "team-label": "The Team",
+        "team-heading": "Our Team",
+        "team1-name": "Team Member Name",
+        "team1-role": "Co-Founder &amp; Chief Architect",
+        "team1-bio": "With over 10 years of experience in architecture and design, they bring a unique perspective that blends traditional and contemporary elements.",
+        "team2-name": "Team Member Name",
+        "team2-role": "Co-Founder &amp; Principal Designer",
+        "team2-bio": "Specializes in interior design and spatial planning, with a keen eye for detail and a passion for creating harmonious living spaces.",
+        "services-label": "What We Do",
+        "services-heading": "Services",
+        "service1-title": "Architecture",
+        "service1-desc": "Complete architectural design services from concept to completion.",
+        "service2-title": "Interior Design",
+        "service2-desc": "Luxury interior design that reflects your personality and lifestyle.",
+        "service3-title": "Heritage Restoration",
+        "service3-desc": "Sensitive restoration of historic buildings and heritage properties.",
+        "service4-title": "Consultation",
+        "service4-desc": "Expert advice on design, planning, and project management.",
+        "footer-logo": "Studio Name",
+        "footer-desc": "Architecture and Interior Design Studio based in City, State.",
+        "footer-location": "City, State",
+        "footer-country": "Country",
+        "footer-email": "hello@example.com",
+        "footer-phone": "+1 234 567 890",
+        "footer-social-1": "Instagram"
+      },
+      "media": {},
+      "cards": {},
+      "order": {},
+      "sizes": {}
     }
   }
 }

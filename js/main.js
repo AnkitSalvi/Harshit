@@ -7,7 +7,36 @@ document.addEventListener('DOMContentLoaded', function () {
     initMobileMenu();
     initScrollAnimations();
     initSmoothScroll();
+    initTileGrids();
 });
+
+/**
+ * Tile grids (Projects, Objects).
+ *
+ * Every tile is the same height — one column's width at 3:4 — no matter how
+ * many columns it spans, so widening a tile never makes it taller. The
+ * height is published as a custom property because a two-column tile can't
+ * derive it from its own width.
+ */
+function initTileGrids() {
+    var grids = document.querySelectorAll('[data-collection]');
+    if (!grids.length) return;
+
+    function sync() {
+        grids.forEach(function (grid) {
+            var columns = window.getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean);
+            var columnWidth = parseFloat(columns[0]);
+            if (!columnWidth) return;
+            grid.style.setProperty('--tile-height', Math.round(columnWidth * 4 / 3) + 'px');
+        });
+    }
+
+    window.syncTileGrids = sync;
+
+    window.addEventListener('resize', sync);
+    window.addEventListener('load', sync);
+    sync();
+}
 
 /**
  * Mobile hamburger menu toggle

@@ -163,6 +163,16 @@ body.cms-editing .hero-bottom [data-editable] {
   pointer-events: auto;
 }
 
+/* About hero: the card sits above the image's upload overlay */
+body.cms-editing .about-hero-card {
+  z-index: 25 !important;
+  pointer-events: none;
+}
+
+body.cms-editing .about-hero-card [data-editable] {
+  pointer-events: auto;
+}
+
 /* Project cards: let clicks pass through to upload overlay,
    but keep editable text clickable */
 body.cms-editing .project-card-content {
@@ -176,4 +186,147 @@ body.cms-editing .project-card-content [data-editable] {
 
 body.cms-editing .project-card-overlay {
   pointer-events: none !important;
+}
+
+/* ============================================
+   Add / remove image tiles (Projects, Objects)
+   ============================================ */
+
+/* Dashed placeholder tile appended to a grid in edit mode */
+.cms-add-card {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  width: 100%;
+  padding: 0;
+  border: 1px dashed rgba(142, 39, 14, 0.45);
+  border-radius: 6px;
+  background: rgba(142, 39, 14, 0.05);
+  color: #8e270e;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.cms-add-card:hover {
+  background: rgba(142, 39, 14, 0.1);
+  border-color: rgba(142, 39, 14, 0.75);
+}
+
+.cms-add-card-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.cms-add-card-plus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+/* Per-tile controls in edit mode: drag handle, shape, remove */
+.cms-card-tools {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cms-card-tools > * {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(27, 24, 24, 0.72);
+  color: #fff;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.cms-card-drag {
+  width: 30px;
+  cursor: grab;
+}
+
+.cms-card-drag:active {
+  cursor: grabbing;
+}
+
+.cms-card-drag:hover {
+  background: rgba(27, 24, 24, 0.92);
+}
+
+.cms-card-remove {
+  width: 30px;
+  font-size: 17px;
+}
+
+.cms-card-remove:hover {
+  background: #dc2626;
+}
+
+/* Tile being dragged */
+.cms-card-ghost {
+  opacity: 0.35;
+  outline: 2px dashed rgba(142, 39, 14, 0.8);
+  outline-offset: -2px;
+}
+
+/* Right-edge grip for setting how many columns a tile spans */
+.cms-card-resize {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 31;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  cursor: ew-resize;
+  touch-action: none;
+  background: linear-gradient(to right, rgba(27, 24, 24, 0) 0%, rgba(27, 24, 24, 0.45) 100%);
+  transition: background 0.25s ease;
+}
+
+.cms-card-resize:hover,
+.cms-card-resize:active {
+  background: linear-gradient(to right, rgba(27, 24, 24, 0) 0%, rgba(27, 24, 24, 0.8) 100%);
+}
+
+/* Two short bars, the usual "drag this edge" mark */
+.cms-card-resize::after {
+  content: '';
+  width: 6px;
+  height: 26px;
+  border-left: 1.5px solid rgba(255, 255, 255, 0.9);
+  border-right: 1.5px solid rgba(255, 255, 255, 0.9);
+}
+
+/* While a tile is being resized, don't let the drag select page text */
+body.cms-resizing {
+  user-select: none;
+  -webkit-user-select: none;
 }
